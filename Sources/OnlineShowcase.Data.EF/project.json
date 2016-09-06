@@ -3,6 +3,7 @@
 
   "dependencies": {
     "Humanizer.Core": "2.1.0",
+    "LinqKit.Microsoft.EntityFrameworkCore": "1.0.5",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
     "NETStandard.Library": "1.6.0",
     "OnlineShowcase.Data": "1.0.0-*"

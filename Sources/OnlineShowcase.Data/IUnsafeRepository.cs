@@ -4,10 +4,10 @@ namespace OnlineShowcase.Data
 {
     public interface IUnsafeRepository<in T>
     {
-        Task<int> Add(T category);
+        Task<int> Add(T entity);
 
-        Task<bool> Update(T category);
+        Task<int> Update(T entity);
 
-        Task<bool> Delete();
+        Task<int> Delete(int id);
     }
 }
