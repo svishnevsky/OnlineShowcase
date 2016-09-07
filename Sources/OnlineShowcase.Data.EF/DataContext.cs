@@ -8,6 +8,11 @@ namespace OnlineShowcase.Data.EF
 {
     public class DataContext : DbContext
     {
+        public DataContext()
+        {
+            base.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var mappingTypes =

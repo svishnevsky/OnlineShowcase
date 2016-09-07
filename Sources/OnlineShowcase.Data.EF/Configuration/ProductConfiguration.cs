@@ -3,7 +3,7 @@ using OnlineShowcase.Data.Model;
 
 namespace OnlineShowcase.Data.EF.Configuration
 {
-    public class ProductConfiguration : BaseModelConfiguration<Product>
+    public class ProductConfiguration : EntityConfiguration<Product>
     {
         public ProductConfiguration(ModelBuilder modelBuilder) : base(modelBuilder)
         {

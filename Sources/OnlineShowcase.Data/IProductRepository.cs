@@ -2,7 +2,7 @@
 
 namespace OnlineShowcase.Data
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface IProductRepository : ISafeRepository<Product>, IUnsafeRepository<Product>
     {
     }
 }

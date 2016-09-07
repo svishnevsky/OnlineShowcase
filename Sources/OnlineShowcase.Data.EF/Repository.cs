@@ -6,7 +6,7 @@ using OnlineShowcase.Data.Model;
 
 namespace OnlineShowcase.Data.EF
 {
-    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseModel
+    public abstract class Repository<TEntity> : ISafeRepository<TEntity>, IUnsafeRepository<TEntity> where TEntity : BaseModel
     {
         private readonly DataContext context;
 

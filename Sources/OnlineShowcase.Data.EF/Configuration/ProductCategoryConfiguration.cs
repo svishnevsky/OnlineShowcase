@@ -2,7 +2,7 @@
 
 namespace OnlineShowcase.Data.EF.Configuration
 {
-    public class ProductCategoryConfiguration : ManyToManyConfiguration<ProductCategory>
+    public class ProductCategoryConfiguration : BaseConfiguration<ProductCategory>
     {
         public ProductCategoryConfiguration(ModelBuilder modelBuilder) : base(modelBuilder)
         {
@@ -10,6 +10,8 @@ namespace OnlineShowcase.Data.EF.Configuration
 
         public override void Map()
         {
+            base.Map();
+
             base.Builder.HasKey("ProductId", "CategoryId");
 
             base.Builder.HasOne("Products").WithMany().HasForeignKey("ProductId").IsRequired();

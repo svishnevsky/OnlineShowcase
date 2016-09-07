@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace OnlineShowcase.Data.EF.Configuration
 {
-    public abstract class ManyToManyConfiguration<TEntity> : IEntityMappingConfiguration where TEntity : class 
+    public class BaseConfiguration<TEntity> : IEntityMappingConfiguration where TEntity : class
     {
         private readonly ModelBuilder modelBuilder;
 
         protected EntityTypeBuilder<TEntity> Builder => modelBuilder.Entity<TEntity>();
 
-        protected ManyToManyConfiguration(ModelBuilder modelBuilder)
+        protected BaseConfiguration(ModelBuilder modelBuilder)
         {
             this.modelBuilder = modelBuilder;
         }
