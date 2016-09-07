@@ -11,7 +11,5 @@ namespace OnlineShowcase.Core.Model
         public string Description { get; set; }
 
         public int ViewCount { get; set; }
-
-        public List<Category> Categories { get; set; }
     }
 }

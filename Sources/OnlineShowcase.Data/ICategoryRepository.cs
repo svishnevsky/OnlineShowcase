@@ -2,7 +2,7 @@
 
 namespace OnlineShowcase.Data
 {
-    public interface ICategoryRepository : ISafeRepository<Category>, IUnsafeRepository<Category>
+    public interface ICategoryRepository : ISafeCategoryRepository, IUnsafeCategoryRepository
     {
     }
 }

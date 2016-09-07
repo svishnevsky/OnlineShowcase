@@ -1,22 +1,13 @@
-﻿using OnlineShowcase.Core.Model;
+﻿using AutoMapper;
+using OnlineShowcase.Core.Model;
 using OnlineShowcase.Data;
 
 namespace OnlineShowcase.Core.Services
 {
     public class CategoryManager : DataManager<Category, Data.Model.Category>, ICategoryManager
     {
-        public CategoryManager(ICategoryRepository repository) : base(repository, repository)
+        public CategoryManager(ICategoryRepository repository, IMapper mapper) : base(repository, repository, mapper)
         {
-        }
-
-        protected override Category Map(Data.Model.Category entity)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Data.Model.Category Map(Category model)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

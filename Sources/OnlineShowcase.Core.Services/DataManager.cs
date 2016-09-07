@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using OnlineShowcase.Data;
 
 namespace OnlineShowcase.Core.Services
@@ -11,36 +12,39 @@ namespace OnlineShowcase.Core.Services
 
         private readonly IUnsafeRepository<TEntity> unsafeRepository;
 
-        protected DataManager(ISafeRepository<TEntity> safeRepository, IUnsafeRepository<TEntity> unsafeRepository)
+        private readonly IMapper mapper;
+
+        protected DataManager(ISafeRepository<TEntity> safeRepository, IUnsafeRepository<TEntity> unsafeRepository, IMapper mapper)
         {
             this.safeRepository = safeRepository;
             this.unsafeRepository = unsafeRepository;
+            this.mapper = mapper;
         }
 
         public virtual async Task<IEnumerable<TModel>> Get()
         {
             var result = await this.safeRepository.Get();
 
-            return result?.Select(this.Map) ?? Enumerable.Empty<TModel>();
+            return result?.Select(e => this.mapper.Map<TModel>(e)) ?? Enumerable.Empty<TModel>();
         }
 
         public virtual async Task<TModel> Get(int id)
         {
             var result = await this.safeRepository.Get(id);
 
-            return this.Map(result);
+            return this.mapper.Map<TModel>(result);
         }
 
         public virtual async Task<int> Add(TModel model)
         {
-            var entity = this.Map(model);
+            var entity = this.mapper.Map<TEntity>(model);
 
             return await this.unsafeRepository.Add(entity);
         }
 
         public virtual async Task<int> Update(TModel model)
         {
-            var entity = this.Map(model);
+            var entity = this.mapper.Map<TEntity>(model);
 
             return await this.unsafeRepository.Update(entity);
         }
@@ -49,9 +53,5 @@ namespace OnlineShowcase.Core.Services
         {
             return await this.unsafeRepository.Delete(id);
         }
-
-        protected abstract TModel Map(TEntity entity);
-
-        protected abstract TEntity Map(TModel model);
     }
 }
