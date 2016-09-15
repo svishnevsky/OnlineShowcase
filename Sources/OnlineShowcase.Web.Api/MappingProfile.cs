@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using OnlineShowcase.Core.Model;
+using OnlineShowcase.Web.Api.Model;
 
 namespace OnlineShowcase.Web.Api
 {
@@ -9,6 +9,9 @@ namespace OnlineShowcase.Web.Api
         {
             CreateMap<Category, Data.Model.Category>();
             CreateMap<Data.Model.Category, Category>();
+
+            CreateMap<Category, Core.Model.Category>();
+            CreateMap<Core.Model.Category, Category>();
         }
     }
 }
