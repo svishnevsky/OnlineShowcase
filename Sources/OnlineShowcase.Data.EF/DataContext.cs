@@ -8,9 +8,10 @@ namespace OnlineShowcase.Data.EF
 {
     public class DataContext : DbContext
     {
-        public DataContext()
+        public DataContext(DbContextOptions options) : base(options)
         {
             base.ChangeTracker.AutoDetectChangesEnabled = false;
+            base.Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

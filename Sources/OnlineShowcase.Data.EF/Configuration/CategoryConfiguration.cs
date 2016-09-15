@@ -13,7 +13,7 @@ namespace OnlineShowcase.Data.EF.Configuration
         {
             base.Map();
 
-            base.Builder.HasOne("Categories").WithMany().HasForeignKey("ParentId").IsRequired(false);
+            base.Builder.HasOne(typeof(Category)).WithMany().HasForeignKey("ParentId").IsRequired(false);
             base.Builder.Property(p => p.Name).IsRequired().HasMaxLength(50);
         }
     }

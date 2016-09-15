@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace OnlineShowcase.Data.EF.Configuration
 {
-    public class BaseConfiguration<TEntity> : IEntityMappingConfiguration where TEntity : class
+    public abstract class BaseConfiguration<TEntity> : IEntityMappingConfiguration where TEntity : class
     {
         private readonly ModelBuilder modelBuilder;
 

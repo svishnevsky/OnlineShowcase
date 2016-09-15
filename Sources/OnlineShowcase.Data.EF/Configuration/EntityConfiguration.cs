@@ -13,8 +13,12 @@ namespace OnlineShowcase.Data.EF.Configuration
         {
             base.Map();
 
+            var keyColumnName = $"{typeof(TEntity).Name}Id";
+
+            this.Builder.Property(e => e.Id).HasColumnName(keyColumnName).UseSqlServerIdentityColumn();
+
             this.Builder
-                .HasKey(e => e.Id).HasName($"{typeof(TEntity).Name}Id");
+                .HasKey(e => e.Id).HasName(keyColumnName);
         }
     }
 }

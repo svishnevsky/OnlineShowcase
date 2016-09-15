@@ -17,6 +17,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OnlineShowcase.Core", "Onli
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OnlineShowcase.Core.Services", "OnlineShowcase.Core.Services\OnlineShowcase.Core.Services.xproj", "{006D2858-04FE-4ABE-96BA-78208482CACE}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OnlineShowcase.Web.Api", "OnlineShowcase.Web.Api\OnlineShowcase.Web.Api.xproj", "{751BCBD4-DBF0-4CD1-AC28-BA2FEBA7C444}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{006D2858-04FE-4ABE-96BA-78208482CACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{006D2858-04FE-4ABE-96BA-78208482CACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{006D2858-04FE-4ABE-96BA-78208482CACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{751BCBD4-DBF0-4CD1-AC28-BA2FEBA7C444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{751BCBD4-DBF0-4CD1-AC28-BA2FEBA7C444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{751BCBD4-DBF0-4CD1-AC28-BA2FEBA7C444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{751BCBD4-DBF0-4CD1-AC28-BA2FEBA7C444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,5 +54,6 @@ Global
 		{A4696832-176C-4E80-8346-4A532137974D} = {D08A1E7E-F1A7-4376-A563-6C4CA070EEDB}
 		{E33EDF6B-BAC7-4948-951F-09D5D9D7F8EA} = {A07D2402-424E-421A-B446-0929F56BA440}
 		{006D2858-04FE-4ABE-96BA-78208482CACE} = {A07D2402-424E-421A-B446-0929F56BA440}
+		{751BCBD4-DBF0-4CD1-AC28-BA2FEBA7C444} = {9E7C3F9D-0C17-4472-A7EC-A5F5A0935EAA}
 	EndGlobalSection
 EndGlobal
