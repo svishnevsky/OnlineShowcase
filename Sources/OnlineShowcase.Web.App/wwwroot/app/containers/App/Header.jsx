@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react'
+import { Link } from 'react-router'
 
 export default class Header extends Component {
     render() {
@@ -8,15 +9,15 @@ export default class Header extends Component {
 			<div className='container'>
 				<div className='header-bottom-left'>
 					<div className='logo'>
-						<a href='index.html'><img src='images/logo.png' alt='OnlineShowcase' /></a>
+						<Link to='/'><img src='images/logo.png' alt='OnlineShowcase' /></Link>
 					</div>
 					<div className='clearfix'> </div>
 				</div>
 				<div className='header-bottom-right'>
 						<div className='account'><a href='login.html'><span> </span>YOUR ACCOUNT</a></div>
 							<ul className='login'>
-								<li><a href='login.html'><span> </span>LOGIN</a></li> |
-								<li><a href='register.html'>SIGNUP</a></li>
+								<li><Link to='login'><span> </span>LOGIN</Link></li> |
+								<li><Link to='register'>SIGNUP</Link></li>
 							</ul>
 						<div className='cart'><a href='#'><span> </span>CART</a></div>
 					<div className='clearfix'> </div>

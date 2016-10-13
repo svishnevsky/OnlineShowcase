@@ -7,9 +7,11 @@ export default class App extends Component {
         return  (
             <div>
               <Header />
+              <div className='container'>
+                  {this.props.children}
               <LeftMenu />
 	<div className='clearfix'> </div>
-                {this.props.children}
+        </div>
             </div>
         )
     }
