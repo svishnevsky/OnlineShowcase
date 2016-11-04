@@ -25,9 +25,12 @@
     "webpack-dev-middleware": "^1.6.1"
   },
   "dependencies": {
+    "auth0-lock": "^10.4.0",
     "babel-polyfill": "^6.9.1",
     "babel-runtime": "^6.9.2",
     "extract-text-webpack-plugin": "^1.0.1",
+    "flux": "^3.0.0",
+    "jwt-decode": "^2.1.0",
     "react": "^15.1.0",
     "react-bootstrap": "^0.29.5",
     "react-dom": "^15.1.0",
