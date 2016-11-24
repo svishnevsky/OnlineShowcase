@@ -195,6 +195,15 @@ ul {
 	border-bottom: 1px solid #ddd;
 	font-weight:700;
 }
+
+.menu ul {
+    display: none;
+}
+
+.menu li:hover ul {
+    display: block;
+}
+
 .menu ul li a {	
 	width: 100%;
 	display: block;

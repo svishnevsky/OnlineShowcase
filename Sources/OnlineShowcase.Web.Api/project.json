@@ -1,4 +1,4 @@
-﻿{
+{
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.0",
@@ -19,7 +19,8 @@
     "Autofac.Extensions.DependencyInjection": "4.0.0",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
     "OnlineShowcase.Data.EF": "1.0.0-*",
-    "OnlineShowcase.Core.Services": "1.0.0-*"
+    "OnlineShowcase.Core.Services": "1.0.0-*",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0"
   },
 
   "tools": {

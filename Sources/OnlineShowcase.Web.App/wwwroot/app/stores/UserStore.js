@@ -3,18 +3,32 @@ import UserConstants from '../constants/UserConstants';
 import { EventEmitter } from 'events';
 import { isTokenExpired } from '../utils/jwtHelpers'
 
-const CHANGE_EVENT = 'change';
+const CHANGE_EVENT = 'user_changed';
 
 function setUser(profile, token) {
-    if (!localStorage.getItem('id_token')) {
-        localStorage.setItem('profile', JSON.stringify(profile));
-        localStorage.setItem('id_token', token);
-    }
+    localStorage.setItem('profile', JSON.stringify(profile));
+    localStorage.setItem('id_token', token);
 }
 
 function clearUser() {
     localStorage.removeItem('profile');
     localStorage.removeItem('id_token');
+}
+
+function checkToken(){
+    const token = localStorage.getItem('id_token');
+    if (!token)
+    {
+        return false;
+    }
+
+    if (isTokenExpired(token))
+    {
+        clearUser();
+        return false;
+    }
+
+    return true;
 }
 
 class UserStoreClass extends EventEmitter {
@@ -31,8 +45,22 @@ class UserStoreClass extends EventEmitter {
     }
   
     isAuthenticated() {
-        const token = this.getJwt();
-        return !!token && !isTokenExpired(token);
+        return checkToken();
+    }
+
+    isInRoles(...roles) {
+        const profile = this.getUser();
+        
+        if (!this.isAuthenticated() || !profile.groups) {
+            return false;
+        }
+
+        const intersect = profile.groups.filter((el) => roles.indexOf(el) !== -1);
+        return intersect.length > 0;
+    }
+
+    isContentEditor() {
+        return this.isInRoles('Admin', 'Contant Manager');
     }
   
     getUser() {

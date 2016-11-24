@@ -2,7 +2,7 @@
 import UserConstants from '../constants/UserConstants';
 
 class UserActionsClass {
-    setUser(profile, token) {
+    setUser (profile, token) {
         AppDispatcher.dispatch({
             actionType: UserConstants.USER_SET,
             profile: profile,
@@ -18,5 +18,4 @@ class UserActionsClass {
 }
 
 const UserActions = new UserActionsClass();
-
 export default UserActions;
