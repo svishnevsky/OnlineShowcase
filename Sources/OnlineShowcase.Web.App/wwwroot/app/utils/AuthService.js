@@ -5,7 +5,14 @@ import LogActions from '../actions/LogActions';
 
 export default class AuthService {
     constructor(clientId, domain) {
-        this.lock = new Auth0Lock(clientId, domain, {});
+        this.lock = new Auth0Lock(clientId, domain, {
+            auth: {
+                responseType: 'token',
+                params: {
+                    scope: 'openid email groups' // Learn about scopes: https://auth0.com/docs/scopes
+                }
+            }
+        });
         this.lock.on('authenticated', this._doAuthentication.bind(this));
         this.lock.on('authorization_error', this._authorizationError.bind(this));
         //this.lock.on('hide', this._goBack.bind(this));

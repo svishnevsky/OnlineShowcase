@@ -10,6 +10,7 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -98,38 +99,12 @@ namespace OnlineShowcase.Web.Api
 
             var options = new JwtBearerOptions
             {
-                Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        // If you need the user's information for any reason at this point, you can get it by looking at the Claims property
-                        // of context.Ticket.Principal.Identity
-                        var claimsIdentity = context.Ticket.Principal.Identity as ClaimsIdentity;
-                        if (claimsIdentity != null)
-                        {
-                            // Get the user's ID
-                            string userId = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-                            // Get the name
-                            string name = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
-                        }
-
-                        return Task.FromResult(0);
-                    },
-                    OnChallenge = context =>
-                    {
-                        return Task.FromResult(0);
-                    },
-                    OnMessageReceived = context =>
-                    {
-                        return Task.FromResult(0);
-                    }
-                },
                 TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = $"https://{Configuration["auth0:Domain"]}/",
                     ValidAudience = Configuration["auth0:ClientId"],
-                    IssuerSigningKey = new SymmetricSecurityKey(keyAsBytes)
+                    IssuerSigningKey = new SymmetricSecurityKey(keyAsBytes),
+                    RoleClaimType = "groups"
                 }
             };
 

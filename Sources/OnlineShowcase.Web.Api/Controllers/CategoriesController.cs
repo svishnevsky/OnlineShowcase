@@ -11,7 +11,7 @@ using OnlineShowcase.Web.Api.Model;
 namespace OnlineShowcase.Web.Api.Controllers
 {
     [Route("Categories")]
-    [Authorize]
+    [Authorize(Roles = "Contant Manager, Admin")]
     public class CategoriesController : Controller
     {
         private readonly ICategoryManager categoryManager;
