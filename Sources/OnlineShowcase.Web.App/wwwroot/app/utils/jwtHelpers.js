@@ -2,7 +2,7 @@
 
 export function getTokenExpirationDate(token) {
     const decoded = decode(token);
-    console.log(decoded);
+
     if(!decoded.exp) {
         return null;
     }
