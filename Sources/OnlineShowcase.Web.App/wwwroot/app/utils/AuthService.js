@@ -9,7 +9,7 @@ export default class AuthService {
             auth: {
                 responseType: 'token',
                 params: {
-                    scope: 'openid email groups' // Learn about scopes: https://auth0.com/docs/scopes
+                    scope: 'openid groups' // Learn about scopes: https://auth0.com/docs/scopes
                 }
             }
         });
