@@ -36,9 +36,11 @@ namespace OnlineShowcase.Web.Api.Controllers
         [ModelValidation]
         public async Task<ActionResult> Post([FromBody]Category model)
         {
-            await this.categoryManager.Add(this.mapper.Map<Core.Model.Category>(model));
+            var categoryId = await this.categoryManager.Add(this.mapper.Map<Core.Model.Category>(model));
 
-            return Ok();
+            var result = new { id = categoryId };
+
+            return CreatedAtRoute("Category", result, result);
         }
     }
 }

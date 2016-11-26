@@ -7,7 +7,7 @@ using OnlineShowcase.Web.Api.Model;
 
 namespace OnlineShowcase.Web.Api.Controllers
 {
-    [Route("Categories/{id:int}")]
+    [Route("Categories/{id:int}", Name = "Category")]
     [Authorize(Roles = "ContentManager,Admin")]
     public class CategoryController : Controller
     {
