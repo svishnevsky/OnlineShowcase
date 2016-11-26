@@ -32,8 +32,13 @@ namespace OnlineShowcase.Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(Category model)
+        public async Task<ActionResult> Post([FromBody]Category model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await this.categoryManager.Add(this.mapper.Map<Core.Model.Category>(model));
 
             return Ok();

@@ -7,8 +7,8 @@ namespace OnlineShowcase.Web.Api
     {
         public MappingProfile()
         {
-            CreateMap<Category, Data.Model.Category>();
-            CreateMap<Data.Model.Category, Category>();
+            CreateMap<Core.Model.Category, Data.Model.Category>();
+            CreateMap<Data.Model.Category, Core.Model.Category>();
 
             CreateMap<Category, Core.Model.Category>();
             CreateMap<Core.Model.Category, Category>();
