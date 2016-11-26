@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+
 using OnlineShowcase.Core.Services;
 using OnlineShowcase.Data.EF;
 
@@ -33,6 +42,16 @@ namespace OnlineShowcase.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                    policyBuilder => policyBuilder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
+
             services.AddMvc();
 
             var builder = new ContainerBuilder();
@@ -74,6 +93,24 @@ namespace OnlineShowcase.Web.Api
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            var keyAsBase64 = Configuration["auth0:clientSecret"].Replace('_', '/').Replace('-', '+');
+            var keyAsBytes = Convert.FromBase64String(keyAsBase64);
+
+            var options = new JwtBearerOptions
+            {
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = $"https://{Configuration["auth0:Domain"]}/",
+                    ValidAudience = Configuration["auth0:ClientId"],
+                    IssuerSigningKey = new SymmetricSecurityKey(keyAsBytes),
+                    RoleClaimType = "groups"
+                }
+            };
+
+            app.UseJwtBearerAuthentication(options);
+
+            app.UseCors("AllowAnyOrigin");
 
             app.UseMvc();
         }

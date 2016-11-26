@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using OnlineShowcase.Core;
 using OnlineShowcase.Web.Api.Model;
 
 namespace OnlineShowcase.Web.Api.Controllers
 {
     [Route("Categories")]
-    [Authorize(Roles = "ContentManager,Admin")]
+    [Authorize(Roles = "Contant Manager, Admin")]
     public class CategoriesController : Controller
     {
         private readonly ICategoryManager categoryManager;

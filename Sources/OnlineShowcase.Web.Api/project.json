@@ -1,4 +1,4 @@
-﻿{
+{
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.0",
@@ -19,7 +19,9 @@
     "Autofac.Extensions.DependencyInjection": "4.0.0",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
     "OnlineShowcase.Data.EF": "1.0.0-*",
-    "OnlineShowcase.Core.Services": "1.0.0-*"
+    "OnlineShowcase.Core.Services": "1.0.0-*",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
+    "Microsoft.AspNetCore.Authentication.OpenIdConnect": "1.1.0"
   },
 
   "tools": {
@@ -55,5 +57,6 @@
 
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
-  }
+  },
+  "userSecretsId": "aspnet-OnlineShowcase.Web.Api-20161124042647"
 }
