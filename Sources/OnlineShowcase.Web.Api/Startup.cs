@@ -22,6 +22,7 @@ using Microsoft.IdentityModel.Tokens;
 using OnlineShowcase.Core.Services;
 using OnlineShowcase.Data.EF;
 using FluentValidation.AspNetCore;
+using OnlineShowcase.Web.Api.Validation;
 
 namespace OnlineShowcase.Web.Api
 {
@@ -53,7 +54,9 @@ namespace OnlineShowcase.Web.Api
                         .AllowCredentials());
             });
 
-            services.AddMvc().AddJsonOptions(jsonOptions =>
+            services.AddMvc(setup => {
+                setup.Filters.Add(typeof(ModelValidationAttribute));
+            }).AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             })

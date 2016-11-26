@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using OnlineShowcase.Core;
 using OnlineShowcase.Web.Api.Model;
+using OnlineShowcase.Web.Api.Validation;
 
 namespace OnlineShowcase.Web.Api.Controllers
 {
@@ -32,13 +33,9 @@ namespace OnlineShowcase.Web.Api.Controllers
         }
 
         [HttpPost]
+        [ModelValidation]
         public async Task<ActionResult> Post([FromBody]Category model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             await this.categoryManager.Add(this.mapper.Map<Core.Model.Category>(model));
 
             return Ok();
