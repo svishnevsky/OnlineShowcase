@@ -1,4 +1,5 @@
-﻿import Validation from 'react-validation';
+﻿import React from 'react';
+import Validation from 'react-validation'
 
 Object.assign(Validation.rules, {
     required: {

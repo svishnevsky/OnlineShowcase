@@ -58,7 +58,7 @@ export default class CategoryEdit extends Component {
             <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
                 <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
             <label htmlFor='name'>Name:</label>
-    <Validation.components.Input type='text' id='name' placeholder='Type category name' name='name' validations={['required']} />
+            <Validation.components.Input type='text' id='name' value='' placeholder='Type category name' name='name' validations={['required']} errorClassName='validation-error' />
 <Validation.components.Button>Save</Validation.components.Button>
 <a onClick={this.close}>Cancel</a>
 </Validation.components.Form>
