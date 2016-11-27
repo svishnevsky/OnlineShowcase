@@ -3,13 +3,14 @@ import CategoryConstants from '../constants/CategoryConstants';
 import CategoriesRepository from '../repositories/CategoriesRepository';
 import { EventEmitter } from 'events';
 
-const SAVE_EVENT = 'category_saved';
+const SAVED_EVENT = 'category_saved';
 
 const categoryRepository = new CategoriesRepository();
 
+const state = {};
+
 function saveCategory(category){
-    console.log(category);
-    categoryRepository.saveCategory(category);
+    return categoryRepository.saveCategory(category);
 }
 
 function deleteCategory(){
@@ -17,27 +18,37 @@ function deleteCategory(){
 }
 
 class CategoriesStoreClass extends EventEmitter {
-    emitSave() {
-        this.emit(SAVE_EVENT);
+    emitSaved() {
+        this.emit(SAVED_EVENT);
     }
 
-    addSaveListener(callback) {
-        this.on(SAVE_EVENT, callback);
+    addSavedListener(callback) {
+        this.on(SAVED_EVENT, callback);
     }
 
-    removeSaveListener(callback) {
-        this.removeListener(SAVE_EVENT, callback);
+    removeSavedListener(callback) {
+        this.removeListener(SAVED_EVENT, callback);
+    }
+
+    getSaved(){
+        return state.saved;
     }
 }
 
 const CategoriesStore = new CategoriesStoreClass();
 
 CategoriesStore.dispatchToken = AppDispatcher.register(action => {
-    console.log(action.actionType);
     switch(action.actionType) {
       
         case CategoryConstants.CATEGORY_SAVE:
-            saveCategory(action.category);
+            saveCategory(action.category).then(response => {
+                state.saved = {
+                    status: response.status,
+                    data: response.data
+                };
+
+                CategoriesStore.emitSaved();
+            });
             break;
       
         case CategoryConstants.CATEGORY_DELETE:

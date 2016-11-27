@@ -1,5 +1,6 @@
 ﻿import Promise from 'promise'
 import UserStore from '../stores/UserStore'
+import LogActions from '../actions/LogActions';
 
 class HttpClientClass {
     constructor(host) {
@@ -15,20 +16,20 @@ class HttpClientClass {
             xhr.open(request.method, uri);
             
             xhr.onload = () => {
-                if (this.status >= 200 && this.status < 300){
-                    resolve(this.status, xhr.response);
-                }
+                resolve({status: xhr.status, data: xhr.response ? JSON.parse(xhr.response) : null});
             };
 
             xhr.onerror = () => {
+                LogActions.logError('Http error', xhr.statusText);
                 reject({
-                    status: this.status,
+                    status: xhr.status,
                     statusText: xhr.statusText
                 });
             };
 
-            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            xhr.setRequestHeader('Accept', 'application/json');
+            for(let name in  request.headers){
+                xhr.setRequestHeader(name, request.headers[name]);
+            }
             
             if (request.requiresAuth) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + UserStore.getJwt());
@@ -45,6 +46,16 @@ export class Request {
         this.path = path;
         this.data = data;
         this.requiresAuth = requiresAuth;
+
+        this.setHeader = this.setHeader.bind(this);
+        this.headers = {
+            "Content-Type" : "application/json; charset=UTF-8",
+            "Accept" : "application/json"
+        }
+    }
+
+    setHeader(name, value){
+        this.headers[name] = value;
     }
 }
 

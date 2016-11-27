@@ -6,4 +6,8 @@ export default class CategoriesRepository {
     saveCategory(category) {
         return HttpClient.send(new Request(category.id ? 'PUT' : 'POST', category.id ? path + category.id : path, category, true));
     }
+    
+    getCategories() {
+        return HttpClient.send(new Request('GET', path));
+    }
 }

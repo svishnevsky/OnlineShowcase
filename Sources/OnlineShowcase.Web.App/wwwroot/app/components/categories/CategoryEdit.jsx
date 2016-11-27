@@ -3,12 +3,11 @@ import Modal from 'react-modal'
 import CategoryActions from '../../actions/CategoryActions'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
+import BlockUi from 'react-block-ui'
+import 'react-block-ui/style.css'
 
-function getState(){
-    return {
-        id: null,
-        name: null
-    };
+function getSavedState(){
+    return CategoriesStore.getSaved();
 }
 
 export default class CategoryEdit extends Component {
@@ -17,49 +16,70 @@ export default class CategoryEdit extends Component {
         this.save = this.save.bind(this);
         this.close = this.close.bind(this);
         this.updateName = this.updateName.bind(this);
+        
+        this.state = {
+            isLoading: false
+        };
 
-        this.state = getState();
-
-        this._onChange = this._onChange.bind(this);
+        this._onSaved = this._onSaved.bind(this);
     }
 
-save() {
-    CategoryActions.saveCategory({
-        id: this.state.id,
-        name: this.state.name
-    });
-}
+    save() {
+        const state = this.state;
+        state.isLoading = true;
+        this.setState(state);
 
-close() {
-    browserHistory.goBack();
-}
+        CategoryActions.saveCategory({
+            id: this.props.location.query.id,
+            name: this.state.name
+        });
+    }
 
-updateName(e) {
-    const state = this.state;
-    state.name = e.target.value;
-    this.setState(state);
-}
+    close() {
+        browserHistory.goBack();
+    }
 
-componentWillMount() {
-    CategoriesStore.addSaveListener(this._onChange);
-}
+    updateName(e) {
+        const state = this.state;
+        state.name = e.target.value;
+        this.setState(state);
+    }
 
-componentWillUnmount() {
-    CategoriesStore.removeSaveListener(this._onChange);
-}
+    componentWillMount() {
+        CategoriesStore.addSavedListener(this._onSaved);
+    }
+
+    componentWillUnmount() {
+        CategoriesStore.removeSavedListener(this._onSaved);
+    }
 
     render() {
         return (
-            <Modal isOpen={true}>
+            <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
             <label htmlFor='name'>Name:</label>
-            <input type='text' id='name' placeholder='Type category name' onChange={this.updateName} />
-            <button onClick={this.save}>Save</button>
-            <button onClick={this.close}>Cancel</button>
-            </Modal>
+    <input type='text' id='name' placeholder='Type category name' onChange={this.updateName} />
+    <button onClick={this.save}>Save</button>
+    <button onClick={this.close}>Cancel</button>
+    </BlockUi>
+    </Modal>
         )
             }
 
-_onChange(){
+_onSaved(){
+    const saved = getSavedState();
+    const state = this.state;
 
+    state.isLoading = false;
+
+    if (saved.status == 400){
+        state.errors = saved.data;
+        console.log(state.errors);
+    }
+
+    this.setState(state);
+
+    if (saved.status == 200 || saved.status == 201){
+        this.close();
+    }
 }
 }
