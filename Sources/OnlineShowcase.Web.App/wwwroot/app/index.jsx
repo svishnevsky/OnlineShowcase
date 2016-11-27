@@ -8,6 +8,7 @@ import Login from './components/auth/Login.jsx'
 import Logout from './components/auth/Logout.jsx'
 import CategoryEdit from './components/categories/CategoryEdit.jsx'
 import AuthService from './utils/AuthService';
+import './utils/ValidationRules'
 
 const auth = new AuthService('27SWqPeKuUfca8sdmhywNLGmHDYjlTmL', 'vishnevsky.eu.auth0.com');
 

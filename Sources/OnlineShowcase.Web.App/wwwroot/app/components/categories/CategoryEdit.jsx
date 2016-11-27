@@ -5,6 +5,8 @@ import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
 import BlockUi from 'react-block-ui'
 import 'react-block-ui/style.css'
+import Validation from 'react-validation';
+
 
 function getSavedState(){
     return CategoriesStore.getSaved();
@@ -15,8 +17,7 @@ export default class CategoryEdit extends Component {
         super();
         this.save = this.save.bind(this);
         this.close = this.close.bind(this);
-        this.updateName = this.updateName.bind(this);
-        
+
         this.state = {
             isLoading: false
         };
@@ -31,20 +32,14 @@ export default class CategoryEdit extends Component {
 
         CategoryActions.saveCategory({
             id: this.props.location.query.id,
-            name: this.state.name
+            name: this.form.components.name.state.value
         });
     }
 
     close() {
         browserHistory.goBack();
     }
-
-    updateName(e) {
-        const state = this.state;
-        state.name = e.target.value;
-        this.setState(state);
-    }
-
+    
     componentWillMount() {
         CategoriesStore.addSavedListener(this._onSaved);
     }
@@ -53,15 +48,22 @@ export default class CategoryEdit extends Component {
         CategoriesStore.removeSavedListener(this._onSaved);
     }
 
+    handleSubmit(event){
+        event.preventDefault();
+        this.save();
+    }
+
     render() {
         return (
             <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
+                <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
             <label htmlFor='name'>Name:</label>
-    <input type='text' id='name' placeholder='Type category name' onChange={this.updateName} />
-    <button onClick={this.save}>Save</button>
-    <button onClick={this.close}>Cancel</button>
-    </BlockUi>
-    </Modal>
+    <Validation.components.Input type='text' id='name' placeholder='Type category name' name='name' validations={['required']} />
+<Validation.components.Button>Save</Validation.components.Button>
+<a onClick={this.close}>Cancel</a>
+</Validation.components.Form>
+</BlockUi>
+</Modal>
         )
             }
 
@@ -70,13 +72,13 @@ _onSaved(){
     const state = this.state;
 
     state.isLoading = false;
+    this.setState(state);
 
     if (saved.status == 400){
-        state.errors = saved.data;
-        console.log(state.errors);
+        for(let name in saved.data){
+            this.form.showError(name, saved.data[name][0]);
+        }
     }
-
-    this.setState(state);
 
     if (saved.status == 200 || saved.status == 201){
         this.close();
