@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
+import '../../utils/ModalStyles'
 import CategoryActions from '../../actions/CategoryActions'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
@@ -31,7 +32,7 @@ export default class CategoryEdit extends Component {
         this.setState(state);
 
         CategoryActions.saveCategory({
-            id: this.props.location.query.id,
+            id: this.props.id,
             name: this.form.components.name.state.value
         });
     }
@@ -56,11 +57,14 @@ export default class CategoryEdit extends Component {
     render() {
         return (
             <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
+                <h3>{this.props.id ? 'Update category' : 'Create new category'}</h3>
                 <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
-            <label htmlFor='name'>Name:</label>
+            <label htmlFor='name'>Name*</label>
             <Validation.components.Input type='text' id='name' value='' placeholder='Type category name' name='name' validations={['required']} errorClassName='validation-error' />
+            <div className='btn-group'>
 <Validation.components.Button>Save</Validation.components.Button>
-<a onClick={this.close}>Cancel</a>
+<a onClick={this.close} className='button'>Cancel</a>
+                </div>
 </Validation.components.Form>
 </BlockUi>
 </Modal>
