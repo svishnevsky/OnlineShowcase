@@ -21,13 +21,6 @@ namespace OnlineShowcase.Web.Api.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<Category> Get(int id)
-        {
-            return this.mapper.Map<Category>(await this.categoryManager.Get(id));
-        }
-
         [HttpPut]
         public async Task<ActionResult> Put([FromBody]Category model)
         {
@@ -41,7 +34,7 @@ namespace OnlineShowcase.Web.Api.Controllers
         {
             await this.categoryManager.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }
