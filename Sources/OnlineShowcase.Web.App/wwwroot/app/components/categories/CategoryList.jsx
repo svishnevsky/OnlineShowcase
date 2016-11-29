@@ -38,25 +38,29 @@ export default class CategoryList extends Component {
             this.state.categories.map((category) => {
                 const hasSubMenu = category.children.length > 0 || this.state.isEditMode;
                 return <li key={category.id}>
+    {!this.state.isEditMode ? null :
+    <div className='icon-group'><a className='icon delete'/><a className='icon edit'/></div>
+            }
             <a href='#'>{category.name} {!hasSubMenu ? null : <img className='arrow-img' src='images/arrow1.png' alt=''/>}</a>
-            {!hasSubMenu ? null : (<ul className='cute'>{category.children.map((child) => {
+
+                {!hasSubMenu ? null : (<ul className='cute'>{category.children.map((child) => {
                     return <li key={child.id}><a href='product.html'>{child.name}</a></li>
                     })}
-                { this.state.isEditMode ? <li><Link to={`categories/${category.id}/new`}>Add category</Link></li> : null }
-                    </ul>)}
-                </li>;
-            })
+                    { this.state.isEditMode ? <li><Link to={`categories/${category.id}/new`}>Add category</Link></li> : null }
+                        </ul>)}
+                    </li>;
+                })
         );
 
-        return (
-            <ul className='menu'>
-                {categories}
+                return (
+                    <ul className='menu'>
+                        {categories}
                 { this.state.isEditMode ? <li><Link to='categories/new'>Add category</Link></li> : null }
-        </ul>
+                </ul>
         )
     }
 
     _onChange() {
         this.setState(getState());
     }
-}
+    }

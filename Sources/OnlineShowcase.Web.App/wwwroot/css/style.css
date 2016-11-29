@@ -212,7 +212,6 @@ ul {
 }
 
 .menu > li > a {
-    width: 100%;
     line-height: 3.5em;
     text-indent: 1.2em;
     display: block;
@@ -222,6 +221,10 @@ ul {
     text-decoration: none;
     border-bottom: 1px solid #ddd;
     font-weight: 700;
+}
+
+.edit-content .menu > li > a{
+    margin-right: 25px;
 }
 
 .menu ul {
@@ -253,6 +256,30 @@ ul {
 .menu > li > a:hover, .menu > li > a.active {
     background: #fff;
 }
+
+.icon {
+    background: url(../images/img-sprite.png);
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    .icon.delete {
+        background-position: 0 -67px;
+    }
+
+    .icon.edit {
+        background-position: -25px -67px;
+    }
+
+.menu .icon-group {
+    float: right;
+}
+
+    .menu .icon-group .icon {
+        display: block;
+    }
 
 .menu ul.kid-menu li a {
     border-bottom: none;
