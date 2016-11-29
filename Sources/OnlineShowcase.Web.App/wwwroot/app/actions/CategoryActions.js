@@ -15,6 +15,10 @@ class CategoryActionsClass {
             id: id
         });
     }
+
+    loadCategories() {
+        AppDispatcher.dispatch({ actionType: CategoryConstants.CATEGORY_LOADALL});
+    }
 }
 
 const CategoryActions = new CategoryActionsClass();

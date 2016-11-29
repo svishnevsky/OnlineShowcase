@@ -276,10 +276,6 @@ ul.cute li {
     background: #fff;
 }
 
-.arrow-img {
-    padding: 0em 0em 0 6.5em;
-}
-
 .img-arrow {
     padding: 0 0 0 8em;
 }
@@ -1072,6 +1068,15 @@ span {
     text-transform: uppercase;
 }
 
+.arrow-img {
+    position: absolute;
+    right: 10px;
+    top: auto;
+    margin-top: -50%;
+    bottom: 50%;
+    transform: translateY(50%);
+}
+
 a.forgot {
     font-size: 0.8125em;
 }
@@ -1456,10 +1461,6 @@ select.in-drop {
 }
 
 @media(max-width:1280px) {
-    .arrow-img {
-        padding: 0em 0em 0 5.5em;
-    }
-
     .img-arrow {
         padding: 0 0 0 7.2em;
     }
@@ -1490,10 +1491,6 @@ select.in-drop {
     .left-grid-view .mask, .left-grid-view .content {
         top: 205px;
         left: 142px;
-    }
-
-    .arrow-img {
-        padding: 0em 0em 0 3.5em;
     }
 
     .img-arrow {
@@ -1637,10 +1634,6 @@ select.in-drop {
         width: 380px !important;
     }
 
-    .arrow-img {
-        padding: 0em 0em 0 33.5em;
-    }
-
     .img-arrow {
         padding: 0 0 0 35em;
     }
@@ -1712,10 +1705,6 @@ select.in-drop {
 
     .latter-right {
         margin: 0 0 0 9em;
-    }
-
-    .arrow-img {
-        padding: 0em 0em 0 25.5em;
     }
 
     .img-arrow {
@@ -1854,10 +1843,6 @@ select.in-drop {
 
     .single_top {
         margin: 0em 0;
-    }
-
-    .arrow-img {
-        padding: 0em 0em 0 15.3em;
     }
 
     .img-arrow {
@@ -2083,10 +2068,6 @@ select.in-drop {
 
     .etalage_zoom_area {
         width: 10px !important;
-    }
-
-    .arrow-img {
-        padding: 0em 0em 0 7em;
     }
 
     .img-arrow {

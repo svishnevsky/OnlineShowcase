@@ -18,7 +18,7 @@ export default class CategoryEdit extends Component {
         super();
         this.save = this.save.bind(this);
         this.close = this.close.bind(this);
-
+        
         this.state = {
             isLoading: false
         };
@@ -32,7 +32,8 @@ export default class CategoryEdit extends Component {
         this.setState(state);
 
         CategoryActions.saveCategory({
-            id: this.props.id,
+            parentId: this.props.params.id && this.props.route.isChild ? this.props.params.id : null,
+            id: this.props.params.id && !this.props.route.isChild ? this.props.params.id : null,
             name: this.form.components.name.state.value
         });
     }
