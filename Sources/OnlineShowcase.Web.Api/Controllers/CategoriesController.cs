@@ -40,7 +40,7 @@ namespace OnlineShowcase.Web.Api.Controllers
 
             var result = new { id = categoryId };
 
-            return CreatedAtRoute("Category", result, result);
+            return this.CreatedAtRoute("Category", result, result);
         }
     }
 }

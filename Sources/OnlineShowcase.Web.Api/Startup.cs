@@ -56,11 +56,7 @@ namespace OnlineShowcase.Web.Api
 
             services.AddMvc(setup => {
                 setup.Filters.Add(typeof(ModelValidationAttribute));
-            }).AddJsonOptions(jsonOptions =>
-            {
-                jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-            })
-                .AddFluentValidation(config =>
+            }).AddFluentValidation(config =>
             {
                 config.RegisterValidatorsFromAssembly(Assembly.GetEntryAssembly());
             });
