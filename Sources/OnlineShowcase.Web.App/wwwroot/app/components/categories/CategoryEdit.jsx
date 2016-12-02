@@ -27,7 +27,7 @@ export default class CategoryEdit extends Component {
         const state = this.state;
         state.isLoading = true;
         this.setState(state);
-        CategoryActions.saveCategory({
+        CategoryActions.save({
             parentId: this.state.parentId,
             id: this.state.id,
             name: this.form.components.name.state.value

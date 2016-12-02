@@ -4,7 +4,7 @@ import CategoriesRepository from '../repositories/CategoriesRepository';
 import { EventEmitter } from 'events';
 
 const SAVED_EVENT = 'category_saved';
-const DELETED_EVENT = 'category_saved';
+const DELETED_EVENT = 'category_deleted';
 const ALLLOADED_EVENT = 'category_allloaded';
 
 const categoryRepository = new CategoriesRepository();
@@ -12,7 +12,7 @@ const categoryRepository = new CategoriesRepository();
 const state = {};
 
 function saveCategory(category){
-    return categoryRepository.saveCategory(category).then(response => {
+    return categoryRepository.save(category).then(response => {
         state.saved = {
             status: response.status,
             data: response.data
@@ -23,19 +23,17 @@ function saveCategory(category){
 }
 
 function deleteCategory(id) {
-    categoryRepository.deleteCategory(id).then(() => {
+    categoryRepository.delete(id).then(() => {
         CategoriesStore.emitDeleted();
     }).then(getCategories);
 }
 
 function getCategories(){
-    categoryRepository.getCategories().then(response => {
+    categoryRepository.get().then(response => {
         state.categories = response.data;
         CategoriesStore.emitAllLoaded();
     });
 }
-
-getCategories();
 
 class CategoriesStoreClass extends EventEmitter {
     emitSaved() {
@@ -109,6 +107,8 @@ class CategoriesStoreClass extends EventEmitter {
 
 const CategoriesStore = new CategoriesStoreClass();
 
+getCategories();
+
 CategoriesStore.dispatchToken = AppDispatcher.register(action => {
     switch(action.actionType) {
       
@@ -118,10 +118,6 @@ CategoriesStore.dispatchToken = AppDispatcher.register(action => {
       
         case CategoryConstants.CATEGORY_DELETE:
             deleteCategory(action.id);
-            break;
-
-        case CategoryConstants.CATEGORY_LOADALL:
-            getCategories();
             break;
 
         default:

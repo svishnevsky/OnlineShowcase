@@ -33,20 +33,16 @@ export default class CategoryList extends Component {
             this.state.categories.map((category) => {
                 const hasSubMenu = category.children.length > 0 || this.state.isEditMode;
                 return <li key={category.id}>
-    {!this.state.isEditMode ? null :
-    <div className='icon-group'><Link to={`categories/${category.id}/delete`} className='icon delete'/><Link to={`categories/${category.id}/edit`} className='icon edit'/></div>
-            }
-            <a href='#'>{category.name} {!hasSubMenu ? null : <img className='arrow-img' src='images/arrow1.png' alt=''/>}</a>
+    <div className='icon-group edit-element'><Link to={`categories/${category.id}/delete`} className='icon delete'/><Link to={`categories/${category.id}/edit`} className='icon edit'/></div>
+            <Link to={`categories/${category.id}`}>{category.name} {!hasSubMenu ? null : <img className='arrow-img' src='images/arrow1.png' alt=''/>}</Link>
 
                 {!hasSubMenu ? null : (<ul className='cute'>{category.children.map((child) => {
                     return <li key={child.id}>
-        {!this.state.isEditMode ? null :
-           <div className='icon-group'><Link to={`categories/${child.id}/delete`} className='icon delete'/><Link to={`categories/${child.id}/edit`} className='icon edit'/></div>
-        }
-    <a href='product.html'>{child.name}</a>
+           <div className='icon-group edit-element'><Link to={`categories/${child.id}/delete`} className='icon delete'/><Link to={`categories/${child.id}/edit`} className='icon edit'/></div>
+    <Link to={`categories/${child.id}`}>{child.name}</Link>
     </li>
                     })}
-                    { this.state.isEditMode ? <li><Link to={`categories/${category.id}/new`}>Add category</Link></li> : null }
+                    <li className='edit-element'><Link to={`categories/${category.id}/new`}>Add sub category</Link></li>
                         </ul>)}
                     </li>;
                 })
@@ -55,7 +51,7 @@ export default class CategoryList extends Component {
                 return (
                     <ul className='menu'>
                         {categories}
-                { this.state.isEditMode ? <li><Link to='categories/new'>Add category</Link></li> : null }
+                <li className='edit-element'><Link to='categories/new'>Add category</Link></li>
                 </ul>
         )
     }

@@ -3,15 +3,15 @@
 const path = 'categories/';
 
 export default class CategoriesRepository {
-    saveCategory(category) {
+    save(category) {
         return HttpClient.send(new Request(category.id ? 'PUT' : 'POST', category.id ? path + category.id : path, category, true));
     }
     
-    getCategories() {
+    get() {
         return HttpClient.send(new Request('GET', path));
     }
 
-    deleteCategory(id) {
+    delete(id) {
         return HttpClient.send(new Request('DELETE', path + id, null, true));
     }
 }

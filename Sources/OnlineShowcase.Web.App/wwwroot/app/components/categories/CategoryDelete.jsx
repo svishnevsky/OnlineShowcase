@@ -37,7 +37,7 @@ export default class CategoryDelete extends Component {
         state.isLoading = true;
         this.setState(state);
 
-        CategoryActions.deleteCategory(this.state.id);
+        CategoryActions.delete(this.state.id);
     }
 
     render() {

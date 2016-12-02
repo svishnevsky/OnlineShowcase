@@ -1490,6 +1490,15 @@ select.in-drop {
     background: #F97E76;
     outline: none;
 }
+
+.edit-element {
+    display: none;
+}
+
+.edit-content .edit-element {
+    display: block;
+}
+
 /*--responsive--*/
 @media(max-width:1440px) {
 }
