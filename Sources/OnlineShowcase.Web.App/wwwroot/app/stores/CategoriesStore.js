@@ -4,6 +4,7 @@ import CategoriesRepository from '../repositories/CategoriesRepository';
 import { EventEmitter } from 'events';
 
 const SAVED_EVENT = 'category_saved';
+const DELETED_EVENT = 'category_saved';
 const ALLLOADED_EVENT = 'category_allloaded';
 
 const categoryRepository = new CategoriesRepository();
@@ -21,7 +22,10 @@ function saveCategory(category){
     }).then(getCategories);
 }
 
-function deleteCategory() {
+function deleteCategory(id) {
+    categoryRepository.deleteCategory(id).then(() => {
+        CategoriesStore.emitDeleted();
+    }).then(getCategories);
 }
 
 function getCategories(){
@@ -30,6 +34,8 @@ function getCategories(){
         CategoriesStore.emitAllLoaded();
     });
 }
+
+getCategories();
 
 class CategoriesStoreClass extends EventEmitter {
     emitSaved() {
@@ -54,6 +60,18 @@ class CategoriesStoreClass extends EventEmitter {
 
     removeAllLoadedListener(callback) {
         this.removeListener(ALLLOADED_EVENT, callback);
+    }
+
+    emitDeleted() {
+        this.emit(DELETED_EVENT);
+    }
+
+    addDeletedListener(callback) {
+        this.on(DELETED_EVENT, callback);
+    }
+
+    removeDeletedListener(callback) {
+        this.removeListener(DELETED_EVENT, callback);
     }
 
     getSaved(){

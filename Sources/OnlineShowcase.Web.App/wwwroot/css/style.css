@@ -223,7 +223,7 @@ ul {
     font-weight: 700;
 }
 
-.edit-content .menu > li > a{
+.edit-content .menu > li > a {
     margin-right: 25px;
 }
 
@@ -236,7 +236,6 @@ ul {
 }
 
 .menu ul li a {
-    width: 100%;
     display: block;
     position: relative;
     font-size: 1.1em;
@@ -253,6 +252,10 @@ ul {
         background: #1DBAA5;
     }
 
+.edit-content .menu ul li a {
+    margin-right: 25px;
+}
+
 .menu > li > a:hover, .menu > li > a.active {
     background: #fff;
 }
@@ -263,7 +266,13 @@ ul {
     height: 25px;
     display: inline-block;
     vertical-align: middle;
+    transition: all .2s ease-in-out;
+    transform: scale(0.6);
 }
+
+    .icon:hover {
+        transform: scale(0.9);
+    }
 
     .icon.delete {
         background-position: 0 -67px;
@@ -275,6 +284,7 @@ ul {
 
 .menu .icon-group {
     float: right;
+    width: 25px;
 }
 
     .menu .icon-group .icon {

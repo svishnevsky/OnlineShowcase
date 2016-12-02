@@ -7,6 +7,7 @@ import Home from './components/home/Home.jsx'
 import Login from './components/auth/Login.jsx'
 import Logout from './components/auth/Logout.jsx'
 import CategoryEdit from './components/categories/CategoryEdit.jsx'
+import CategoryDelete from './components/categories/CategoryDelete.jsx'
 import AuthService from './utils/AuthService';
 import UserStore from './stores/UserStore';
 import './utils/ValidationRules'
@@ -29,8 +30,10 @@ render((
             <Route path='categories'>
                 <Route path='new' component={CategoryEdit} onEnter={requireContentManager} />
                 <Route path=':id'>
-                <Route path='new' component={CategoryEdit} isChild={true} onEnter={requireContentManager} />
-                    </Route>
+                    <Route path='new' component={CategoryEdit} isChild={true} onEnter={requireContentManager} />
+                    <Route path='edit' component={CategoryEdit} onEnter={requireContentManager} />
+                    <Route path='delete' component={CategoryDelete} onEnter={requireContentManager} />
+                </Route>
             </Route>
         </Route>
       </Router>

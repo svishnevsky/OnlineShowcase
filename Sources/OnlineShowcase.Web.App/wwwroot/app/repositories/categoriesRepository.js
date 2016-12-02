@@ -10,4 +10,8 @@ export default class CategoriesRepository {
     getCategories() {
         return HttpClient.send(new Request('GET', path));
     }
+
+    deleteCategory(id) {
+        return HttpClient.send(new Request('DELETE', path + id, null, true));
+    }
 }

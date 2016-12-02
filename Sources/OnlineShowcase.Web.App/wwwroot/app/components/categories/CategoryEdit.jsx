@@ -17,11 +17,6 @@ export default class CategoryEdit extends Component {
     constructor() {
         super();
         this.save = this.save.bind(this);
-        this.close = this.close.bind(this);
-        
-        this.state = {
-            isLoading: false
-        };
 
         this._onSaved = this._onSaved.bind(this);
     }
@@ -32,8 +27,8 @@ export default class CategoryEdit extends Component {
         this.setState(state);
 
         CategoryActions.saveCategory({
-            parentId: this.props.params.id && this.props.route.isChild ? this.props.params.id : null,
-            id: this.props.params.id && !this.props.route.isChild ? this.props.params.id : null,
+            parentId: this.state.parentId,
+            id: this.state.Id,
             name: this.form.components.name.state.value
         });
     }
@@ -43,6 +38,13 @@ export default class CategoryEdit extends Component {
     }
     
     componentWillMount() {
+        const isChild = this.props.params.id && this.props.route.isChild;
+        this.state = {
+            isLoading: false,
+            id: isChild ? null : this.props.params.id,
+            parentId: !isChild ? null : this.props.params.id
+        };
+
         CategoriesStore.addSavedListener(this._onSaved);
     }
 
