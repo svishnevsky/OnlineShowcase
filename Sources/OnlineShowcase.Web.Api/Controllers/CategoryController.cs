@@ -34,7 +34,7 @@ namespace OnlineShowcase.Web.Api.Controllers
         {
             await this.categoryManager.Delete(id);
 
-            return NoContent();
+            return this.Ok();
         }
     }
 }
