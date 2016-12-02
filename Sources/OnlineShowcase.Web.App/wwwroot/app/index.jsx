@@ -30,7 +30,7 @@ render((
             <Route path='categories'>
                 <Route path='new' component={CategoryEdit} onEnter={requireContentManager} />
                 <Route path=':id'>
-                    <Route path='new' component={CategoryEdit} isChild={true} onEnter={requireContentManager} />
+                    <Route path='new' component={CategoryEdit} isNewChild={true} onEnter={requireContentManager} />
                     <Route path='edit' component={CategoryEdit} onEnter={requireContentManager} />
                     <Route path='delete' component={CategoryDelete} onEnter={requireContentManager} />
                 </Route>

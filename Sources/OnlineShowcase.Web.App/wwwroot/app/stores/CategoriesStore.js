@@ -81,6 +81,30 @@ class CategoriesStoreClass extends EventEmitter {
     getCategories() {
         return state.categories;
     }
+
+    getCategory(id) {
+        if (!state.categories) {
+            return null;
+        }
+
+        for (let category of state.categories) {
+            if (category.id == id) {
+                return category;
+            }
+
+            if (category.children.length === 0) {
+                continue;
+            }
+
+            for (let child of category.children) {
+                if (child.id == id) {
+                    return child;
+                }
+            }
+        }
+
+        return null;
+    }
 }
 
 const CategoriesStore = new CategoriesStoreClass();

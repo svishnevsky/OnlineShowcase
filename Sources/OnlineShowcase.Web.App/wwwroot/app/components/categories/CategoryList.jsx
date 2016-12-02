@@ -41,7 +41,7 @@ export default class CategoryList extends Component {
                 {!hasSubMenu ? null : (<ul className='cute'>{category.children.map((child) => {
                     return <li key={child.id}>
         {!this.state.isEditMode ? null :
-           <div className='icon-group'><Link to={`categories/${child.id}/delete`} className='icon delete'/><a to={`categories/${child.id}/edit`} className='icon edit'/></div>
+           <div className='icon-group'><Link to={`categories/${child.id}/delete`} className='icon delete'/><Link to={`categories/${child.id}/edit`} className='icon edit'/></div>
         }
     <a href='product.html'>{child.name}</a>
     </li>
