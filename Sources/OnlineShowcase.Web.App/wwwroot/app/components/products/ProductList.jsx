@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react'
+import { Link } from 'react-router'
 
 export default class ProductList extends Component {
     render() {
@@ -20,9 +21,9 @@ export default class ProductList extends Component {
 <div className='grid-product'>
    <div className='product-grid edit-element'>
       <div className='content_box'>
-         <a href='single.html'>
-               <img src='images/plus.svg' className='img-responsive watch-right' alt='Add new product'/>
-         </a>
+         <Link to='products/new'>
+               <img src='/images/plus.svg' className='img-responsive' alt='Add new product'/>
+         </Link>
      </div>
   </div>
   <div className='product-grid'>
