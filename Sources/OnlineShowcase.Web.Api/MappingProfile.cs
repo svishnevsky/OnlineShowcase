@@ -12,6 +12,12 @@ namespace OnlineShowcase.Web.Api
 
             CreateMap<Category, Core.Model.Category>();
             CreateMap<Core.Model.Category, Category>();
+
+            CreateMap<Core.Model.Product, Data.Model.Product>();
+            CreateMap<Data.Model.Product, Core.Model.Product>();
+
+            CreateMap<Product, Core.Model.Product>();
+            CreateMap<Core.Model.Product, Product>();
         }
     }
 }
