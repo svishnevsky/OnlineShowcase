@@ -3,7 +3,6 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router, hashHistory, Route, IndexRoute } from 'react-router'
 import App from './components/app/App.jsx'
-import Home from './components/home/Home.jsx'
 import Login from './components/auth/Login.jsx'
 import Logout from './components/auth/Logout.jsx'
 import CategoryEdit from './components/categories/CategoryEdit.jsx'
@@ -27,10 +26,10 @@ const requireContentManager = (nextState, replace) => {
 render((
     <Router history={hashHistory}>
         <Route path='/' component={App}>
-            <IndexRoute component={Home} />
+            <IndexRoute component={ProductList} />
             <Route path='login' component={Login} auth={auth} />
             <Route path='logout' component={Logout} />
-            <Route path='access_token=:token' component={Home} />
+            <Route path='access_token=:token' component={ProductList} />
             <Route path='categories'>
                 <Route path='new' component={CategoryEdit} onEnter={requireContentManager} />
                 <Route path=':id'>

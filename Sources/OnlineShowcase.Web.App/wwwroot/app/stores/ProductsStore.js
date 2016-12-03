@@ -31,10 +31,7 @@ function deleteProduct(id){
 
 function getProduct(id){
     productsRepository.get(id).then(response => {
-        state.got = {
-            status: response.status,
-            data: response.data
-        };
+        state.got = response.data;
 
         ProductsStore.emitGot();
     });
@@ -42,10 +39,7 @@ function getProduct(id){
 
 function findProducts(filter){
     productsRepository.find(filter).then(response => {
-        state.found = {
-            status: response.status,
-            data: response.data
-        };
+        state.found = response.data;
 
         ProductsStore.emitFound();
     });

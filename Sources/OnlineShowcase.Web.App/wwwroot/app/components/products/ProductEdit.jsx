@@ -26,7 +26,8 @@ export default class ProductEdit extends Component {
         this.setState(state);
         ProductActions.save({
             id: this.state.id,
-            name: this.form.components.name.state.value
+            name: this.form.components.name.state.value,
+            description: this.form.components.description.state.value
         });
     }
 
@@ -39,6 +40,10 @@ export default class ProductEdit extends Component {
 
         ProductsStore.addSavedListener(this._onSaved);
         ProductsStore.addGotListener(this._onGot);
+
+        if (this.props.params.id){
+            ProductActions.get(this.props.params.id);
+        }
     }
 
     componentWillUnmount() {
@@ -59,6 +64,8 @@ export default class ProductEdit extends Component {
                 <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
             <label htmlFor='name'>Name*</label>
             <Validation.components.Input type='text' id='name' value={this.state.name} placeholder='Type product name' name='name' validations={['required']} errorClassName='validation-error' />
+            <label htmlFor='description'>Description*</label>
+            <Validation.components.Input type='textarea' id='description' value={this.state.description} placeholder='Type description' name='description' validations={['required']} errorClassName='validation-error' />
             <div className='btn-group'>
 <Validation.components.Button>Save</Validation.components.Button>
 <a onClick={this.close} className='button'>Cancel</a>
@@ -71,11 +78,12 @@ export default class ProductEdit extends Component {
 }
 
 _getState() {
-    const product = !this.props.params.id ? null : ProductsStore.getProduct();
+    const product = !this.props.params.id ? null : ProductsStore.getGot();
     return {
         isLoading: this.props.params.id && !product ? true : false,
         id: this.props.params.id,
-        name: product ? product.name : ''
+        name: product ? product.name : '',
+        description: product ? product.description : ''
     };   
 }
 

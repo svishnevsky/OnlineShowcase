@@ -1,7 +1,28 @@
 ﻿import React, { Component } from 'react'
 import { Link } from 'react-router'
+import ProductsStore from '../../stores/ProductsStore'
+import ProductActions from '../../actions/ProductActions'
+import ManageIcons from '../app/ManageIcons'
 
 export default class ProductList extends Component {
+    constructor() {
+        super();
+
+        this._getState = this._getState.bind(this);
+        this._onFound = this._onFound.bind(this);
+
+        this.state = this._getState();
+    }
+
+    componentWillMount() {
+        ProductsStore.addFoundListener(this._onFound);
+        ProductActions.find();
+    }
+
+    componentWillUnmount() {
+        ProductsStore.removeFoundListener(this._onFound);
+    }
+
     render() {
         return (<div className='women-product'>
                     <div className=' w_content'>
@@ -26,23 +47,38 @@ export default class ProductList extends Component {
          </Link>
      </div>
   </div>
-  <div className='product-grid'>
-     <div className='content_box'>
-        <a href='single.html'>
-           <div className='left-grid-view grid-view-left'>
-              <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-              <div className='mask'>
-                 <div className='info'>Quick View</div>
-              </div>
-        </div>
-        </a>
-        <h4><a href='#'> Duis autem</a></h4>
-        <p>It is a long established fact that a reader</p>
-        Rs. 499
-     </div>
-  </div>
-  <div className='clearfix'> </div>
-</div>
-</div>);
+
+        {!this.state.products ? null :
+            this.state.products.map(product => {
+                return <div className='product-grid' key={product.id}>
+                   <ManageIcons basePath={`products/${product.id}`}/>
+                   <div className='content_box'>
+                      <Link to={`products/${product.id}`}>
+                         <div className='left-grid-view grid-view-left'>
+                            <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            <div className='mask'>
+                               <div className='info'>Quick View</div>
+                            </div>
+                        </div>
+                      </Link>
+                      <h4>{product.name}</h4>
+                      <p>{product.summary}</p>
+             </div>
+          </div>
+            })
+        }
+        <div className='clearfix'> </div>
+      </div>
+      </div>);
+    }
+
+    _getState() {
+        return {
+            products: ProductsStore.getFound()
+        };
+    }
+
+    _onFound() {
+        this.setState(this._getState());
     }
 }
