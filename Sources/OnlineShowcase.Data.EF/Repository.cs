@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace OnlineShowcase.Data.EF
 {
@@ -37,8 +38,7 @@ namespace OnlineShowcase.Data.EF
 
         public virtual async Task<int> Update(TEntity entity)
         {
-            var entry = this.context.Attach(entity);
-            entry.State = EntityState.Modified;
+            var entry = this.Attach(entity);
 
             return await this.context.SaveChangesAsync();
         }
@@ -55,6 +55,14 @@ namespace OnlineShowcase.Data.EF
             this.context.Set<TEntity>().Remove(entity);
 
             return await this.context.SaveChangesAsync();
+        }
+
+        protected virtual EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            var entry = this.context.Attach(entity);
+            entry.State = EntityState.Modified;
+
+            return entry;
         }
     }
 }
