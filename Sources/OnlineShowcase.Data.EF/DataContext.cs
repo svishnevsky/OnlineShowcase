@@ -11,7 +11,7 @@ namespace OnlineShowcase.Data.EF
         public DataContext(DbContextOptions options) : base(options)
         {
             base.ChangeTracker.AutoDetectChangesEnabled = false;
-            base.Database.EnsureCreated();
+            base.Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -4,6 +4,8 @@ using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace OnlineShowcase.Data.EF
 {
@@ -63,6 +65,12 @@ namespace OnlineShowcase.Data.EF
             entry.State = EntityState.Modified;
 
             return entry;
+        }
+
+        protected Task<int> ExecSP(string name, params SqlParameter[] parameters)
+        {
+            var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));
+            return this.context.Database.ExecuteSqlCommandAsync($"{name} {paramNames}", parameters: parameters);
         }
     }
 }

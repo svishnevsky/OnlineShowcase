@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OnlineShowcase.Data.Model;
+using System.Data.SqlClient;
 
 namespace OnlineShowcase.Data.EF
 {
@@ -7,6 +9,11 @@ namespace OnlineShowcase.Data.EF
     {
         public ProductRepository(DataContext context) : base(context)
         {
+        }
+
+        public Task IncrementViewsCount(int productId, int increment)
+        {
+            return base.ExecSP("IncrementProductViews", new SqlParameter("@ProductId", productId), new SqlParameter("@Increment", increment));
         }
 
         protected override EntityEntry<Product> Attach(Product entity)

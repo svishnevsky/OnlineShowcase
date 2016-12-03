@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using OnlineShowcase.Core.Model;
 using OnlineShowcase.Data;
@@ -14,8 +13,7 @@ namespace OnlineShowcase.Core.Services
 
         public Task IncrementViewsCount(int productId, int increment)
         {
-            var t = productId;
-            return Task.Factory.StartNew(() => { });
+            return ((IUnsafeProductRepository)base.UnsafeRepository).IncrementViewsCount(productId, increment);
         }
     }
 }

@@ -5,6 +5,7 @@
     "Humanizer.Core": "2.1.0",
     "LinqKit.Microsoft.EntityFrameworkCore": "1.1.9",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Tools": "1.1.0-preview4-final",
     "NETStandard.Library": "1.6.0",
     "OnlineShowcase.Data": "1.0.0-*"
   },

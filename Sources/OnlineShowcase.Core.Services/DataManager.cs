@@ -8,50 +8,50 @@ namespace OnlineShowcase.Core.Services
 {
     public abstract class DataManager<TModel, TEntity> : ISafeManager<TModel>, IUnsafeManager<TModel> where TModel : class
     {
-        private readonly ISafeRepository<TEntity> safeRepository;
+        protected readonly ISafeRepository<TEntity> SafeRepository;
 
-        private readonly IUnsafeRepository<TEntity> unsafeRepository;
+        protected readonly IUnsafeRepository<TEntity> UnsafeRepository;
 
-        private readonly IMapper mapper;
+        protected readonly IMapper Mapper;
 
         protected DataManager(ISafeRepository<TEntity> safeRepository, IUnsafeRepository<TEntity> unsafeRepository, IMapper mapper)
         {
-            this.safeRepository = safeRepository;
-            this.unsafeRepository = unsafeRepository;
-            this.mapper = mapper;
+            this.SafeRepository = safeRepository;
+            this.UnsafeRepository = unsafeRepository;
+            this.Mapper = mapper;
         }
 
         public virtual async Task<IEnumerable<TModel>> Get()
         {
-            var result = await this.safeRepository.Get();
+            var result = await this.SafeRepository.Get();
 
-            return result?.Select(e => this.mapper.Map<TModel>(e)) ?? Enumerable.Empty<TModel>();
+            return result?.Select(e => this.Mapper.Map<TModel>(e)) ?? Enumerable.Empty<TModel>();
         }
 
         public virtual async Task<TModel> Get(int id)
         {
-            var result = await this.safeRepository.Get(id);
+            var result = await this.SafeRepository.Get(id);
 
-            return this.mapper.Map<TModel>(result);
+            return this.Mapper.Map<TModel>(result);
         }
 
         public virtual async Task<int> Add(TModel model)
         {
-            var entity = this.mapper.Map<TEntity>(model);
+            var entity = this.Mapper.Map<TEntity>(model);
 
-            return await this.unsafeRepository.Add(entity);
+            return await this.UnsafeRepository.Add(entity);
         }
 
         public virtual async Task<int> Update(TModel model)
         {
-            var entity = this.mapper.Map<TEntity>(model);
+            var entity = this.Mapper.Map<TEntity>(model);
 
-            return await this.unsafeRepository.Update(entity);
+            return await this.UnsafeRepository.Update(entity);
         }
 
         public virtual async Task<int> Delete(int id)
         {
-            return await this.unsafeRepository.Delete(id);
+            return await this.UnsafeRepository.Delete(id);
         }
     }
 }
