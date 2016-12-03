@@ -17,6 +17,16 @@ body {
         -moz-transition: 0.5s all;
     }
 
+.header {
+    position: fixed;
+    background-color: #ffffff;
+    z-index: 9999;
+}
+
+#container > div > div.container {
+    padding-top: 80px;
+}
+
 .top-header {
     background: #F97E76;
     padding: 0.7em 0;
@@ -331,8 +341,9 @@ ul.cute li {
 }
 
 .sub-cate {
-    width: 27%;
+    width: 26%;
     margin: 2em 2em 0 0;
+    position: fixed;
 }
 
 .banner-off {
@@ -834,6 +845,10 @@ p.m_text {
     margin: 2% 0;
 }
 
+.product-grid .icon-group {
+    float: left;
+}
+
 .product-grid h4 {
     font-size: 16px;
     margin-top: 5px;
@@ -849,6 +864,10 @@ p.m_text {
     color: #777777;
     line-height: 1.5em;
     margin-bottom: 10px;
+}
+
+.content_box h4 {
+    text-align: center;
 }
 
 .content_box-grid {
@@ -1011,12 +1030,16 @@ p.m_text {
         width: 95%;
     }
 
-input[type="text"] {
+input[type="text"], textarea {
     border: 1px solid #DDDBDB;
     outline-color: #bbb9b9;
     width: 96%;
     font-size: 0.9em;
     padding: 10px;
+}
+
+textarea {
+    height: 300px;
 }
 
 input.validation-error {
@@ -1497,6 +1520,10 @@ select.in-drop {
 
 .edit-content .edit-element {
     display: block;
+}
+
+.edit-content .view-element {
+    display: none;
 }
 
 /*--responsive--*/

@@ -56,9 +56,6 @@ export default class ProductList extends Component {
                       <Link to={`products/${product.id}`}>
                          <div className='left-grid-view grid-view-left'>
                             <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                            <div className='mask'>
-                               <div className='info'>Quick View</div>
-                            </div>
                         </div>
                       </Link>
                       <h4>{product.name}</h4>

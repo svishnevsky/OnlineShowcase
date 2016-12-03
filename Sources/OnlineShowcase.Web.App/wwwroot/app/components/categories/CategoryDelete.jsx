@@ -21,7 +21,7 @@ export default class CategoryDelete extends Component {
     
     componentWillMount() {
         this.state = {
-            id: this.props.params.id,
+            id: this.props.params.categoryId,
             isLoading: false
     }
 

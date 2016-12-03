@@ -8,7 +8,6 @@ import Logout from './components/auth/Logout.jsx'
 import CategoryEdit from './components/categories/CategoryEdit.jsx'
 import CategoryDelete from './components/categories/CategoryDelete.jsx'
 import ProductList from './components/products/ProductList.jsx'
-import ProductEdit from './components/products/ProductEdit.jsx'
 import ProductDelete from './components/products/ProductDelete.jsx'
 import ProductView from './components/products/ProductView.jsx'
 import AuthService from './utils/AuthService';
@@ -32,7 +31,7 @@ render((
             <Route path='access_token=:token' component={ProductList} />
             <Route path='categories'>
                 <Route path='new' component={CategoryEdit} onEnter={requireContentManager} />
-                <Route path=':id'>
+                <Route path=':categoryId'>
                     <IndexRoute component={ProductList} />
                     <Route path='new' component={CategoryEdit} isNewChild={true} onEnter={requireContentManager} />
                     <Route path='edit' component={CategoryEdit} onEnter={requireContentManager} />
@@ -40,10 +39,9 @@ render((
                 </Route>
             </Route>
             <Route path='products'>
-                <Route path='new' component={ProductEdit} onEnter={requireContentManager} />
-                <Route path=':id'>
+                <Route path='new' component={ProductView} onEnter={requireContentManager} />
+                <Route path=':productId'>
                     <IndexRoute component={ProductView} />
-                    <Route path='edit' component={ProductEdit} onEnter={requireContentManager} />
                     <Route path='delete' component={ProductDelete} onEnter={requireContentManager} />
                 </Route>
             </Route>

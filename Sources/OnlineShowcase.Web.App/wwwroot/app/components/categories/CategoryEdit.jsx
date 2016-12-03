@@ -32,7 +32,7 @@ export default class CategoryEdit extends Component {
             parentId: this.state.parentId,
             id: this.state.id,
             name: this.form.components.name.state.value
-        });
+        });this.props.params.categoryId
     }
 
     close() {
@@ -74,12 +74,12 @@ export default class CategoryEdit extends Component {
 }
 
 _getState() {
-    const isNewChild = this.props.params.id && this.props.route.isNewChild;
-    const category = !this.props.params.id || isNewChild ? null : CategoriesStore.getCategory(this.props.params.id);
+    const isNewChild = this.props.params.categoryId && this.props.route.isNewChild;
+    const category = !this.props.params.categoryId || isNewChild ? null : CategoriesStore.getCategory(this.props.params.categoryId);
     return {
-        isLoading: this.props.params.id && !isNewChild && !category ? true : false,
+        isLoading: this.props.params.categoryId && !isNewChild && !category ? true : false,
         id: category ? category.id : null,
-        parentId: isNewChild ? this.props.params.id : category ? category.parentId : null,
+        parentId: isNewChild ? this.props.params.categoryId : category ? category.parentId : null,
         name: category ? category.name : ''
     };   
 }
