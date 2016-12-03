@@ -70,7 +70,7 @@ export default class ProductView extends Component {
                             <div className='desc1 span_3_of_2'>
                                 <h4 className='view-element'>{this.state.name}</h4>
                                 <Validation.components.Input type='text' className='edit-element' id='name' value={this.state.name} placeholder='Type product name' name='name' validations={['required']} errorClassName='validation-error' />
-                                <h6>{this.state.viewCount ? this.state.viewCount : 0} views.</h6>
+                                <h6>{this.state.viewCount} views.</h6>
                             </div>
                         <div className='clearfix'> </div>
                         </div>
@@ -96,7 +96,8 @@ _getState() {
         isLoading: this.props.params.productId && !product ? true : false,
         id: this.props.params.productId,
         name: product ? product.name : '',
-        description: product ? product.description : ''
+        description: product ? product.description : '',
+        viewCount: product ? product.viewCount : 0
     };   
 }
 
