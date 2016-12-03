@@ -13,6 +13,14 @@ namespace OnlineShowcase.Web.Api.Controllers.Common
         {
         }
 
+        [HttpGet]
+        [ModelValidation]
+        [ActionName("Index")]
+        public virtual async Task<TViewModel> Get(int id)
+        {
+            return this.Mapper.Map<TDomainModel, TViewModel>(await this.SafeManager.Get(id));
+        }
+
         [HttpPut]
         [ModelValidation]
         [ActionName("Index")]
