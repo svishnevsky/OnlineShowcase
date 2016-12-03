@@ -1,26 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using AutoMapper;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-
-using OnlineShowcase.Core.Services;
-using OnlineShowcase.Data.EF;
 using FluentValidation.AspNetCore;
 using OnlineShowcase.Web.Api.Validation;
 
@@ -61,38 +46,7 @@ namespace OnlineShowcase.Web.Api
                 config.RegisterValidatorsFromAssembly(Assembly.GetEntryAssembly());
             });
 
-            var builder = new ContainerBuilder();
-
-            var assembly = typeof(DataManager<,>).GetTypeInfo().Assembly;
-
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(t => !t.GetTypeInfo().IsAbstract && t.GetInterfaces().Any() && t.Name.EndsWith("Manager"))
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
-
-            assembly = typeof(Repository<>).GetTypeInfo().Assembly;
-
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(t => !t.GetTypeInfo().IsAbstract && t.GetInterfaces().Any() && t.Name.EndsWith("Repository"))
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
-
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
-
-            builder.Register(ctx => new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfile());
-            }));
-
-            builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>();
-
-            builder.Populate(services);
-            var container = builder.Build();
-
-            return new AutofacServiceProvider(container);
-
+            return DIConfig.Build(services, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -119,7 +73,10 @@ namespace OnlineShowcase.Web.Api
 
             app.UseCors("AllowAnyOrigin");
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                RoutingConfig.Register(routes);
+            });
         }
     }
 }

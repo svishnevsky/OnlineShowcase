@@ -22,7 +22,9 @@
     "Microsoft.Extensions.Logging": "1.1.0",
     "Microsoft.Extensions.Logging.Console": "1.1.0",
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0"
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "Humanizer.Core": "2.1.0",
+    "Microsoft.AspNetCore.Mvc.WebApiCompatShim": "1.0.1"
   },
 
   "tools": {
