@@ -27,6 +27,7 @@ export default class CategoryEdit extends Component {
         const state = this.state;
         state.isLoading = true;
         this.setState(state);
+
         CategoryActions.save({
             parentId: this.state.parentId,
             id: this.state.id,
@@ -78,7 +79,7 @@ _getState() {
     return {
         isLoading: this.props.params.id && !isNewChild && !category ? true : false,
         id: category ? category.id : null,
-        parentId: isNewChild ? this.props.params.id : null,
+        parentId: isNewChild ? this.props.params.id : category ? category.parentId : null,
         name: category ? category.name : ''
     };   
 }
