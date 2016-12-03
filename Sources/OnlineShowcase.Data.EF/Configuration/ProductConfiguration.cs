@@ -14,7 +14,7 @@ namespace OnlineShowcase.Data.EF.Configuration
             base.Map();
 
             base.Builder.Property(p => p.Name).IsRequired().HasMaxLength(150);
-            base.Builder.Property(p => p.Description).IsRequired().HasMaxLength(1000);
+            base.Builder.Property(p => p.Description).IsRequired().HasMaxLength(4000);
             base.Builder.Property(p => p.ViewCount).IsRequired().HasDefaultValue(0);
         }
     }
