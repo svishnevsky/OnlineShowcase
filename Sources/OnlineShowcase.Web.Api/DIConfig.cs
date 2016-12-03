@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShowcase.Core.Services;
 using OnlineShowcase.Data.EF;
+using OnlineShowcase.Core.Reactive.Events;
+using OnlineShowcase.Core.Reactive.Subscribers;
+using OnlineShowcase.Core.Reactive;
 
 namespace OnlineShowcase.Web.Api
 {
@@ -42,6 +45,18 @@ namespace OnlineShowcase.Web.Api
             }));
 
             builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>();
+
+            builder.RegisterType<ProductViewEventSubscriber>()
+                .As<IObserver<ProductViewEvent>>()
+                .SingleInstance();
+
+            builder.RegisterType<EventStream>()
+                .As<IEventStream>()
+                .OnActivated(e =>
+                {
+                    e.Instance.Subscribe(e.Context.Resolve<IObserver<ProductViewEvent>>());
+                })
+                .SingleInstance();
 
             builder.Populate(services);
             var container = builder.Build();

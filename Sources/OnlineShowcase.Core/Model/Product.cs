@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OnlineShowcase.Core.Model
+﻿namespace OnlineShowcase.Core.Model
 {
     public class Product
     {
