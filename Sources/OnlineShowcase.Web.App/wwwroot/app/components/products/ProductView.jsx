@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react'
 import ProductActions from '../../actions/ProductActions'
 import ProductsStore from '../../stores/ProductsStore'
+import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory, Link } from 'react-router'
 import BlockUi from 'react-block-ui'
 import 'react-block-ui/style.css'
@@ -15,6 +16,9 @@ export default class ProductView extends Component {
         super();
 
         this.save = this.save.bind(this);
+        this.selectCategoryChanged = this.selectCategoryChanged.bind(this);
+        this.removeCategory = this.removeCategory.bind(this);
+        this.addCategory = this.addCategory.bind(this);
         this._getState = this._getState.bind(this);
         this._onSaved = this._onSaved.bind(this);
         this._onGot = this._onGot.bind(this);
@@ -27,7 +31,8 @@ export default class ProductView extends Component {
         ProductActions.save({
             id: this.state.id,
             name: this.form.components.name.state.value,
-            description: this.form.components.description.state.value
+            description: this.form.components.description.state.value,
+            categories: this.state.categories
         });
     }
 
@@ -40,6 +45,7 @@ export default class ProductView extends Component {
 
         ProductsStore.addSavedListener(this._onSaved);
         ProductsStore.addGotListener(this._onGot);
+        CategoriesStore.addAllLoadedListener(this._onGot);
 
         if (this.props.params.productId){
             ProductActions.get(this.props.params.productId);
@@ -49,11 +55,43 @@ export default class ProductView extends Component {
     componentWillUnmount() {
         ProductsStore.removeSavedListener(this._onSaved);
         ProductsStore.removeGotListener(this._onGot);
+        CategoriesStore.removeAllLoadedListener(this._onGot);
     }
 
     handleSubmit(event){
         event.preventDefault();
         this.save();
+    }
+
+    addCategory(event){
+        event.preventDefault();
+
+        if (!this.state.selectedCategoryId){
+            return;
+        }
+
+        var category = this.state.notAddedCategories.find(c => c.id == this.state.selectedCategoryId);
+        
+        const state = this.state;
+        this.state.notAddedCategories.splice(this.state.notAddedCategories.indexOf(category), 1);
+        this.state.categories.push(category);
+        this.setState(state);
+    }
+
+    removeCategory(category){
+        const state = this.state;
+
+        this.state.categories.splice(this.state.categories.indexOf(category), 1);
+        this.state.notAddedCategories.push(category);
+
+        this.setState(state);
+    }
+
+    selectCategoryChanged(event){
+        const id = event.target.value;
+        const state = this.state;
+        this.state.selectedCategoryId = id;
+        this.setState(state);
     }
 
     render() {
@@ -77,15 +115,20 @@ export default class ProductView extends Component {
 
                             <div className='desc1 span_3_of_2'>
                                 {!this.state.categories ? null : this.state.categories.map(c => {
-                                    return <Link to={`categories/${c.id}`} className='category' key={c.id}>{c.name} <span className='icon delete edit-element'> </span></Link>
+                                    return <Link to={`categories/${c.id}`} className='category' key={c.id}>{c.name}
+                                                <span className='icon delete edit-element' onClick={(event) => {event.preventDefault(); this.removeCategory(c)}}></span>
+                                            </Link>
                                     })
                                     }
 
                                 <div className='edit-element'>
-                                    <select>
-                                        <option>111</option>
+                                    <select onChange={this.selectCategoryChanged}>
+                                        <option>Select category</option>
+                                    {!this.state.notAddedCategories ? null : this.state.notAddedCategories.map(c => {
+                                            return <option key={c.id} value={c.id}>{c.name}</option>    
+                                    })}
                                     </select>
-                                    <button>add</button>
+                                    <button onClick={this.addCategory}>add</button>
                                 </div>
                             </div>
                         <div className='clearfix'> </div>
@@ -94,7 +137,7 @@ export default class ProductView extends Component {
                         <div className='toogle'>
                             <h3 className='m_3'>Product Details</h3>
                                     {paragraphs.map((p, i) => {
-                                return <p className='m_text view-element' key={i}>{p}</p>
+                                    return <p className='m_text view-element' key={i}>{p}</p>
                                     })}
                             
                             <Validation.components.Textarea className='edit-element' id='description' value={this.state.description} placeholder='Type description' name='description' validations={['required']} errorClassName='validation-error' />
@@ -111,13 +154,30 @@ export default class ProductView extends Component {
 
 _getState() {
     const product = !this.props.params.productId ? null : ProductsStore.getGot();
+
+    let notAddedCategories = null;
+    const categoryMap = CategoriesStore.getCategoryMap();
+    if (!this.props.params.productId){
+        notAddedCategories = categoryMap;
+                                    } else if (product && product.categories && categoryMap){
+        notAddedCategories = new Array();
+        for (let id in categoryMap){
+            if (!product.categories.find(pc => { return id == pc.id; }))
+                                    {
+                notAddedCategories.push(categoryMap[id]);
+                                    }
+                                    }
+                                    }
+
     return {
                                         isLoading: this.props.params.productId && !product ? true : false,
                                         id: this.props.params.productId,
                                         name: product ? product.name : '',
                                         description: product ? product.description : '',
-                                        viewCount: product ? product.viewCount : 0
-                                    };   
+                                        viewCount: product ? product.viewCount : 0,
+                                        categories: product ? product.categories : null,
+                                        notAddedCategories: notAddedCategories
+                                    };
                                     }
 
 _onSaved(){
@@ -140,5 +200,5 @@ _onSaved(){
 
 _onGot() {
     this.setState(this._getState());
-                                    }
+                                    } 
                                     }

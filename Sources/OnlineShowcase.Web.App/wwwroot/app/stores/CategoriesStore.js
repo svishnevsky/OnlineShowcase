@@ -31,6 +31,20 @@ function deleteCategory(id) {
 function getCategories(){
     categoryRepository.get().then(response => {
         state.categories = response.data;
+        state.categoryMap = {};
+
+        for (let category of state.categories) {
+            state.categoryMap[category.id] = category;
+
+            if (!category.children || category.children.length === 0) {
+                continue;
+            }
+
+            for (let child of category.children) {
+                state.categoryMap[child.id] = child;
+            }
+        }
+
         CategoriesStore.emitAllLoaded();
     });
 }
@@ -80,28 +94,18 @@ class CategoriesStoreClass extends EventEmitter {
         return state.categories;
     }
 
+    getCategoryMap(){
+        return state.categoryMap;
+    }
+
     getCategory(id) {
-        if (!state.categories) {
+        const category = state.categoryMap ? state.categoryMap[id] : null;
+        if (!category){
+            getCategories();
             return null;
         }
 
-        for (let category of state.categories) {
-            if (category.id == id) {
-                return category;
-            }
-
-            if (category.children.length === 0) {
-                continue;
-            }
-
-            for (let child of category.children) {
-                if (child.id == id) {
-                    return child;
-                }
-            }
-        }
-
-        return null;
+        return category;
     }
 }
 

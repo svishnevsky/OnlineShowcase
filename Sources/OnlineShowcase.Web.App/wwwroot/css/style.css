@@ -1510,6 +1510,10 @@ ul.face-in-to {
     border-radius: 15px;
 }
 
+.span_3_of_2 .category .icon {
+    display: inline-block;
+}
+
 .span_3_of_2 select {
     border: 1px solid #ddd;
     outline: none;
@@ -1518,7 +1522,8 @@ ul.face-in-to {
     color: #777;
     padding: 7px;
     margin: 0 5px 0 0;
-    -webkit-transition: all 0.5s ease-out
+    -webkit-transition: all 0.5s ease-out;
+    min-width: 200px;
 }
 
 .get-cart-in {
