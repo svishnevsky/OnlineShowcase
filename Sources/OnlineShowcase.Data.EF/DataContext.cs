@@ -11,6 +11,7 @@ namespace OnlineShowcase.Data.EF
         public DataContext(DbContextOptions options) : base(options)
         {
             base.ChangeTracker.AutoDetectChangesEnabled = false;
+            base.Database.AutoTransactionsEnabled = true;
             base.Database.Migrate();
         }
 

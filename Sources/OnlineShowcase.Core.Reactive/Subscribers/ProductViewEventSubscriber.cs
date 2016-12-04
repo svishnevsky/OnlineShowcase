@@ -24,7 +24,7 @@ namespace OnlineShowcase.Core.Reactive.Subscribers
 
         public void OnNext(ProductViewEvent value)
         {
-            this.productManager.IncrementViewsCount(value.ProductId, 1);
+            this.productManager.IncrementViewsCount(value.ProductId, 1).Wait();
         }
     }
 }

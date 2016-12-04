@@ -1,4 +1,6 @@
-﻿namespace OnlineShowcase.Core.Model
+﻿using System.Collections.Generic;
+
+namespace OnlineShowcase.Core.Model
 {
     public class Product
     {
@@ -9,5 +11,7 @@
         public string Description { get; set; }
 
         public int ViewCount { get; set; }
+
+        public IEnumerable<Category> Categories { get; set; }
     }
 }

@@ -37,7 +37,11 @@ namespace OnlineShowcase.Web.Api
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+            builder.Register(ctx =>
+            {
+                return new DataContext(new DbContextOptionsBuilder<DataContext>().UseSqlServer(connectionString).Options);
+            })
+            .InstancePerDependency();
 
             builder.Register(ctx => new MapperConfiguration(cfg =>
             {

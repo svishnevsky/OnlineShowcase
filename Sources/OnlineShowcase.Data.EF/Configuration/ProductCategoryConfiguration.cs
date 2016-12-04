@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OnlineShowcase.Data.Model;
 
 namespace OnlineShowcase.Data.EF.Configuration
 {
@@ -15,9 +14,9 @@ namespace OnlineShowcase.Data.EF.Configuration
 
             base.Builder.HasKey("ProductId", "CategoryId");
 
-            base.Builder.HasOne(typeof(Product)).WithMany().HasForeignKey("ProductId").IsRequired();
+            base.Builder.HasOne(pc => pc.Product).WithMany().HasForeignKey("ProductId").IsRequired();
 
-            base.Builder.HasOne(typeof(Category)).WithMany().HasForeignKey("CategoryId").IsRequired();
+            base.Builder.HasOne(pc => pc.Category).WithMany().HasForeignKey("CategoryId").IsRequired();
         }
     }
 }

@@ -42,10 +42,14 @@ namespace OnlineShowcase.Data.EF.Migrations
 
                     b.Property<int?>("ParentId");
 
+                    b.Property<int?>("ProductId");
+
                     b.HasKey("Id")
                         .HasName("CategoryId");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Categories");
                 });
@@ -77,12 +81,12 @@ namespace OnlineShowcase.Data.EF.Migrations
 
             modelBuilder.Entity("OnlineShowcase.Data.EF.Configuration.ProductCategory", b =>
                 {
-                    b.HasOne("OnlineShowcase.Data.Model.Category")
+                    b.HasOne("OnlineShowcase.Data.Model.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("OnlineShowcase.Data.Model.Product")
+                    b.HasOne("OnlineShowcase.Data.Model.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -93,6 +97,10 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.HasOne("OnlineShowcase.Data.Model.Category")
                         .WithMany()
                         .HasForeignKey("ParentId");
+
+                    b.HasOne("OnlineShowcase.Data.Model.Product")
+                        .WithMany("Categories")
+                        .HasForeignKey("ProductId");
                 });
         }
     }

@@ -8,7 +8,7 @@ using OnlineShowcase.Data.EF;
 namespace OnlineShowcase.Data.EF.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20161203202019_Initial")]
+    [Migration("20161204102222_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,10 +43,14 @@ namespace OnlineShowcase.Data.EF.Migrations
 
                     b.Property<int?>("ParentId");
 
+                    b.Property<int?>("ProductId");
+
                     b.HasKey("Id")
                         .HasName("CategoryId");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Categories");
                 });
@@ -78,12 +82,12 @@ namespace OnlineShowcase.Data.EF.Migrations
 
             modelBuilder.Entity("OnlineShowcase.Data.EF.Configuration.ProductCategory", b =>
                 {
-                    b.HasOne("OnlineShowcase.Data.Model.Category")
+                    b.HasOne("OnlineShowcase.Data.Model.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("OnlineShowcase.Data.Model.Product")
+                    b.HasOne("OnlineShowcase.Data.Model.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -94,6 +98,10 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.HasOne("OnlineShowcase.Data.Model.Category")
                         .WithMany()
                         .HasForeignKey("ParentId");
+
+                    b.HasOne("OnlineShowcase.Data.Model.Product")
+                        .WithMany("Categories")
+                        .HasForeignKey("ProductId");
                 });
         }
     }

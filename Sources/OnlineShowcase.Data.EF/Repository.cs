@@ -4,20 +4,19 @@ using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace OnlineShowcase.Data.EF
 {
     public abstract class Repository<TEntity> : ISafeRepository<TEntity>, IUnsafeRepository<TEntity> where TEntity : BaseModel
     {
-        private readonly DataContext context;
+        protected readonly DataContext Context;
 
-        protected IQueryable<TEntity> Query => this.context.Set<TEntity>().AsExpandable();
+        protected IQueryable<TEntity> Query => this.Context.Set<TEntity>().AsExpandable();
 
         protected Repository(DataContext context)
         {
-            this.context = context;
+            this.Context = context;
         }
 
         public virtual async Task<TEntity[]> Get()
@@ -32,8 +31,8 @@ namespace OnlineShowcase.Data.EF
 
         public virtual async Task<int> Add(TEntity entity)
         {
-            var entry = this.context.Set<TEntity>().Add(entity).Entity;
-            await this.context.SaveChangesAsync();
+            var entry = this.Context.Set<TEntity>().Add(entity).Entity;
+            await this.Context.SaveChangesAsync();
 
             return entry.Id;
         }
@@ -42,7 +41,7 @@ namespace OnlineShowcase.Data.EF
         {
             var entry = this.Attach(entity);
 
-            return await this.context.SaveChangesAsync();
+            return await this.Context.SaveChangesAsync();
         }
 
         public virtual async Task<int> Delete(int id)
@@ -54,23 +53,23 @@ namespace OnlineShowcase.Data.EF
                 return 0;
             }
 
-            this.context.Set<TEntity>().Remove(entity);
+            this.Context.Set<TEntity>().Remove(entity);
 
-            return await this.context.SaveChangesAsync();
+            return await this.Context.SaveChangesAsync();
         }
 
         protected virtual EntityEntry<TEntity> Attach(TEntity entity)
         {
-            var entry = this.context.Attach(entity);
+            var entry = this.Context.Attach(entity);
             entry.State = EntityState.Modified;
 
             return entry;
         }
 
-        protected Task<int> ExecSP(string name, params SqlParameter[] parameters)
+        protected async Task<int> ExecSP(string name, params SqlParameter[] parameters)
         {
             var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));
-            return this.context.Database.ExecuteSqlCommandAsync($"{name} {paramNames}", parameters: parameters);
+            return await this.Context.Database.ExecuteSqlCommandAsync($"{name} {paramNames}", parameters: parameters);
         }
     }
 }
