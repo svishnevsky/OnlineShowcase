@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react'
 import ProductActions from '../../actions/ProductActions'
 import ProductsStore from '../../stores/ProductsStore'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import BlockUi from 'react-block-ui'
 import 'react-block-ui/style.css'
 import Validation from 'react-validation';
@@ -57,6 +57,8 @@ export default class ProductView extends Component {
     }
 
     render() {
+        const paragraphs = this.state.description.split(/\r?\n+/);
+
         return (
                 <BlockUi tag='div' blocking={this.state.isLoading} className='single_top'>
                     <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
@@ -72,12 +74,29 @@ export default class ProductView extends Component {
                                 <Validation.components.Input type='text' className='edit-element' id='name' value={this.state.name} placeholder='Type product name' name='name' validations={['required']} errorClassName='validation-error' />
                                 <h6>{this.state.viewCount} views.</h6>
                             </div>
+
+                            <div className='desc1 span_3_of_2'>
+                                {!this.state.categories ? null : this.state.categories.map(c => {
+                                    return <Link to={`categories/${c.id}`} className='category' key={c.id}>{c.name} <span className='icon delete edit-element'> </span></Link>
+                                    })
+                                    }
+
+                                <div className='edit-element'>
+                                    <select>
+                                        <option>111</option>
+                                    </select>
+                                    <button>add</button>
+                                </div>
+                            </div>
                         <div className='clearfix'> </div>
                         </div>
 
                         <div className='toogle'>
                             <h3 className='m_3'>Product Details</h3>
-                            <p className='m_text view-element'>{this.state.description}</p>
+                                    {paragraphs.map((p, i) => {
+                                return <p className='m_text view-element' key={i}>{p}</p>
+                                    })}
+                            
                             <Validation.components.Textarea className='edit-element' id='description' value={this.state.description} placeholder='Type description' name='description' validations={['required']} errorClassName='validation-error' />
                         </div>
                         
@@ -88,18 +107,18 @@ export default class ProductView extends Component {
                     </Validation.components.Form>
                 </BlockUi>
             );
-}
+                                    }
 
 _getState() {
     const product = !this.props.params.productId ? null : ProductsStore.getGot();
     return {
-        isLoading: this.props.params.productId && !product ? true : false,
-        id: this.props.params.productId,
-        name: product ? product.name : '',
-        description: product ? product.description : '',
-        viewCount: product ? product.viewCount : 0
-    };   
-}
+                                        isLoading: this.props.params.productId && !product ? true : false,
+                                        id: this.props.params.productId,
+                                        name: product ? product.name : '',
+                                        description: product ? product.description : '',
+                                        viewCount: product ? product.viewCount : 0
+                                    };   
+                                    }
 
 _onSaved(){
     const saved = getSaved();
@@ -111,15 +130,15 @@ _onSaved(){
     if (saved.status == 400){
         for(let name in saved.data){
             this.form.showError(name, saved.data[name][0]);
-        }
-    }
+                                    }
+                                    }
 
     if (saved.status == 200 || saved.status == 201){
         this.close();
-    }
-}
+                                    }
+                                    }
 
 _onGot() {
     this.setState(this._getState());
-}
-}
+                                    }
+                                    }

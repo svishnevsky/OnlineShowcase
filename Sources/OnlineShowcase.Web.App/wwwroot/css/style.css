@@ -696,6 +696,8 @@ p.m_text {
     color: #999;
     font-size: 1em;
     line-height: 1.8em;
+    text-indent: 25px;
+    text-align: justify;
 }
 
 .single {
@@ -1494,6 +1496,29 @@ ul.face-in-to {
     border-bottom: 1px solid rgba(85, 85, 85, 0.15);
     padding-bottom: 15px;
     margin-bottom: 2%;
+}
+
+.span_3_of_2 .category {
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 5px;
+    background: #F97E76;
+    font-size: 1.2em;
+    color: #ffffff;
+    padding: 3px 7px;
+    border-radius: 15px;
+}
+
+.span_3_of_2 select {
+    border: 1px solid #ddd;
+    outline: none;
+    background: none;
+    font-size: 1em;
+    color: #777;
+    padding: 7px;
+    margin: 0 5px 0 0;
+    -webkit-transition: all 0.5s ease-out
 }
 
 .get-cart-in {
