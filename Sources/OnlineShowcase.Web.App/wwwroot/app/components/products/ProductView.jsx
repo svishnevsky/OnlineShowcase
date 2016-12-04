@@ -158,7 +158,7 @@ _getState() {
     let notAddedCategories = null;
     const categoryMap = CategoriesStore.getCategoryMap();
     if (!this.props.params.productId){
-        notAddedCategories = categoryMap;
+        notAddedCategories = categoryMap ? Object.keys(categoryMap).map(key => categoryMap[key]) : null;
                                     } else if (product && product.categories && categoryMap){
         notAddedCategories = new Array();
         for (let id in categoryMap){
@@ -175,7 +175,7 @@ _getState() {
                                         name: product ? product.name : '',
                                         description: product ? product.description : '',
                                         viewCount: product ? product.viewCount : 0,
-                                        categories: product ? product.categories : null,
+                                        categories: product ? product.categories : [],
                                         notAddedCategories: notAddedCategories
                                     };
                                     }
