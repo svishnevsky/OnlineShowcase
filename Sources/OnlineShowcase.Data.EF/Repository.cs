@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Data.SqlClient;
+using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
 {
@@ -19,9 +20,9 @@ namespace OnlineShowcase.Data.EF
             this.Context = context;
         }
 
-        public virtual async Task<TEntity[]> Get()
+        public virtual async Task<TEntity[]> Get(IFilter<TEntity> filter = null)
         {
-            return await this.Query.ToArrayAsync();
+            return await (filter == null ? this.Query : filter.Apply(this.Query)).ToArrayAsync();
         }
 
         public virtual async Task<TEntity> Get(int id)

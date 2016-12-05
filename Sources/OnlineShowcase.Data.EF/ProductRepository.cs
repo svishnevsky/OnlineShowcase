@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using OnlineShowcase.Data.EF.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
 {
@@ -29,9 +30,9 @@ namespace OnlineShowcase.Data.EF
             return product;
         }
 
-        public async override Task<Product[]> Get()
+        public async override Task<Product[]> Get(IFilter<Product> filter = null)
         {
-            var products = await base.Get();
+            var products = await base.Get(filter);
 
             var productIds = products.Select(p => p.Id).ToArray();
             
