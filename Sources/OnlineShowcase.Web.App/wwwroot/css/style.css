@@ -21,10 +21,11 @@ body {
     position: fixed;
     background-color: #ffffff;
     z-index: 9999;
+    width: 100%;
 }
 
 #container > div > div.container {
-    padding-top: 80px;
+    padding-top: 100px;
 }
 
 .top-header {
@@ -341,7 +342,7 @@ ul.cute li {
 }
 
 .sub-cate {
-    width: 26%;
+    width: 320px;
     margin: 2em 2em 0 0;
     position: fixed;
 }
@@ -795,8 +796,9 @@ p.m_text {
 /*--product--*/
 /*-- start w_content --*/
 .women-product, .account_grid, .register, .single_top, .main {
-    width: 70%;
+    width: 100%;
     float: right;
+    padding-left: 340px;
 }
 
 .women_main {
