@@ -41,6 +41,7 @@ namespace OnlineShowcase.Data.EF
         public virtual async Task<int> Update(TEntity entity)
         {
             var entry = this.Attach(entity);
+            entry.Property("Created").IsModified = false;
 
             return await this.Context.SaveChangesAsync();
         }
@@ -67,6 +68,7 @@ namespace OnlineShowcase.Data.EF
             return entry;
         }
 
+        // ReSharper disable once InconsistentNaming
         protected async Task<int> ExecSP(string name, params SqlParameter[] parameters)
         {
             var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));

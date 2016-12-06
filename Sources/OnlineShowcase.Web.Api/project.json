@@ -25,7 +25,8 @@
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
     "Humanizer.Core": "2.1.0",
     "Microsoft.AspNetCore.Mvc.WebApiCompatShim": "1.0.1",
-    "OnlineShowcase.Core.Reactive": "1.0.0-*"
+    "OnlineShowcase.Core.Reactive": "1.0.0-*",
+    "OnlineShowcase.Data": "1.0.0-*"
   },
 
   "tools": {

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using OnlineShowcase.Data.EF.Filtering;
+using OnlineShowcase.Data.Filtering;
 using OnlineShowcase.Web.Api.Model;
 
 namespace OnlineShowcase.Web.Api
@@ -18,6 +20,9 @@ namespace OnlineShowcase.Web.Api
 
             CreateMap<Product, Core.Model.Product>();
             CreateMap<Core.Model.Product, Product>();
+
+            CreateMap<Core.Filtering.ProductFilter, IFilter<Data.Model.Product>>().As<Data.EF.Filtering.ProductFilter>();
+            CreateMap<Model.Filter, Core.Filtering.Filter>();
         }
     }
 }

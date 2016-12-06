@@ -30,7 +30,7 @@ namespace OnlineShowcase.Web.Api.Controllers.Common
         {
             await this.UnsafeManager.Update(this.Mapper.Map<TDomainModel>(model));
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete]

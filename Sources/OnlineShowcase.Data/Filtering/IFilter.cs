@@ -8,6 +8,10 @@ namespace OnlineShowcase.Data.Filtering
 
         int? Take { get; set; }
 
+        string SortBy { get; set; }
+
+        bool SortAsc { get; set; }
+
         IQueryable<TEntity> Apply(IQueryable<TEntity> query);
     }
 }

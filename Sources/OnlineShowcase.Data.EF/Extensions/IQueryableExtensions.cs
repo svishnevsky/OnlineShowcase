@@ -6,13 +6,13 @@ namespace OnlineShowcase.Data.EF.Extensions
 {
     public static class IQueryableExtensions
     {
-        public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> source, string propertyName)
+        public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> source, string propertyName, bool sortAsc)
         {
             var parameter = Expression.Parameter(typeof(TSource), "x");
             Expression property = Expression.Property(parameter, propertyName);
             var lambda = Expression.Lambda(property, parameter);
-            
-            var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == "OrderBy" && x.GetParameters().Length == 2);
+
+            var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == (sortAsc ? "OrderBy" : "OrderByDescending") && x.GetParameters().Length == 2);
             var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(TSource), property.Type);
             var result = orderByGeneric.Invoke(null, new object[] { source, lambda });
 

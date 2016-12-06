@@ -5,22 +5,20 @@ using System.Data.SqlClient;
 using OnlineShowcase.Data.EF.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using OnlineShowcase.Data.EF.Filtering;
 using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {
-        private DbSet<ProductCategory> ProductCategorySet
-        {
-            get { return base.Context.Set<ProductCategory>(); }
-        }
+        private DbSet<ProductCategory> ProductCategorySet => base.Context.Set<ProductCategory>();
 
         public ProductRepository(DataContext context) : base(context)
         {
         }
 
-        public async override Task<Product> Get(int id)
+        public override async Task<Product> Get(int id)
         {
             var product = await base.Get(id);
             var categories = base.Context.Set<ProductCategory>().Where(pc => pc.ProductId == id).Select(pc => pc.Category).ToList();
@@ -30,9 +28,11 @@ namespace OnlineShowcase.Data.EF
             return product;
         }
 
-        public async override Task<Product[]> Get(IFilter<Product> filter = null)
+        public override async Task<Product[]> Get(IFilter<Product> filter = null)
         {
-            var products = await base.Get(filter);
+            var products = !(filter is ProductFilter)
+                ? await base.Get(filter)
+                : await ((ProductFilter)filter).Apply(this.ProductCategorySet).ToArrayAsync();
 
             var productIds = products.Select(p => p.Id).ToArray();
             
@@ -42,12 +42,9 @@ namespace OnlineShowcase.Data.EF
                 .GroupBy(pc => pc.ProductId)
                 .ToDictionary(g => g.Key, g => g.Select(c => c.Category).ToList());
 
-            foreach (var product in products)
+            foreach (var product in products.Where(product => categories.ContainsKey(product.Id)))
             {
-                if (categories.ContainsKey(product.Id))
-                {
-                    product.Categories = categories[product.Id];
-                }
+                product.Categories = categories[product.Id];
             }
 
             return products;
@@ -72,7 +69,7 @@ namespace OnlineShowcase.Data.EF
             return base.Update(entity);
         }
 
-        public async override Task<int> Add(Product entity)
+        public override async Task<int> Add(Product entity)
         {
             var id = await base.Add(entity);
 
