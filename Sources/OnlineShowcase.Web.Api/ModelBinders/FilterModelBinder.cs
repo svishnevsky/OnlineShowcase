@@ -33,7 +33,7 @@ namespace OnlineShowcase.Web.Api.ModelBinders
                 {
                     var sort = query["sort"].ToString().Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
                     if (sort.Length == 0 || sort.Length > 2 ||
-                        (sort.Length == 2 && (sort[1] != "asc" || sort[1] != "desc")))
+                        (sort.Length == 2 && (sort[1] != "asc" && sort[1] != "desc")))
                     {
                         bindingContext.ActionContext.ModelState.AddModelError("sort", $"\"sort\" format is \"<property name>:<direction(asc or desc):optionsl>\".");
                     }

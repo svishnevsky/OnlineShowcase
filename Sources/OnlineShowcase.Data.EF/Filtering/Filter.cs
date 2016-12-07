@@ -8,7 +8,7 @@ namespace OnlineShowcase.Data.EF.Filtering
 {
     public class Filter<T> : IFilter<T>
     {
-        private string sortBy;
+        private PropertyInfo sortByProp;
 
         public int? Skip { get; set; }
 
@@ -16,15 +16,23 @@ namespace OnlineShowcase.Data.EF.Filtering
 
         public string SortBy
         {
-            get { return this.sortBy; }
+            get { return this.sortByProp?.Name; }
             set
             {
-                if (typeof (T).GetProperties().All(p => p.Name != value))
+                if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException($"Type \"{typeof(T).Name}\" doesn't contains property {value}.");
+                    return;
                 }
 
-                this.sortBy = value;
+                var propInfo = typeof (T).GetProperties()
+                    .FirstOrDefault(p => p.Name.Equals(value, StringComparison.CurrentCultureIgnoreCase));
+
+                if (propInfo == null)
+                {
+                    return;
+                }
+
+                this.sortByProp = propInfo;
             }
         }
 
@@ -32,7 +40,7 @@ namespace OnlineShowcase.Data.EF.Filtering
 
         public virtual IQueryable<T> Apply(IQueryable<T> query)
         {
-            return query.OrderBy(this.SortBy, this.SortAsc).Segment(this.Skip, this.Take);
+            return (string.IsNullOrEmpty(this.SortBy) ? query : query.OrderBy(this.SortBy, this.SortAsc)).Segment(this.Skip, this.Take);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace OnlineShowcase.Data.EF.Filtering
         {
             return base.Apply(this.Categories == null
                 ? query.Select(pc => pc.Product)
-                : query.Where(pc => this.Categories.Contains(pc.CategoryId)).Select(pc => pc.Product));
+                : query.Where(pc => this.Categories.Contains(pc.CategoryId)).Select(pc => pc.Product)).Distinct();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace OnlineShowcase.Web.Api
             var entitiesControllerTypes = Assembly.GetEntryAssembly().GetTypes()
                 .Where(t => !t.GetTypeInfo().IsAbstract
                 && t.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType
-                && t.GetTypeInfo().BaseType.GetTypeInfo().GetGenericTypeDefinition() == typeof(EntitiesController<,,,>));
+                && t.GetTypeInfo().BaseType.GetTypeInfo().GetGenericTypeDefinition() == typeof(EntitiesController<,,>));
 
             foreach (var type in entitiesControllerTypes)
             {

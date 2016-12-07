@@ -30,7 +30,8 @@ namespace OnlineShowcase.Data.EF
 
         public override async Task<Product[]> Get(IFilter<Product> filter = null)
         {
-            var products = !(filter is ProductFilter)
+            var productFilter = filter as ProductFilter;
+            var products = productFilter?.Categories == null || !productFilter.Categories.Any()
                 ? await base.Get(filter)
                 : await ((ProductFilter)filter).Apply(this.ProductCategorySet).ToArrayAsync();
 
