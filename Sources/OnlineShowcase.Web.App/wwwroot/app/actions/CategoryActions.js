@@ -2,14 +2,14 @@
 import CategoryConstants from '../constants/CategoryConstants';
 
 class CategoryActionsClass {
-    saveCategory(category) {
+    save(category) {
         AppDispatcher.dispatch({
             actionType: CategoryConstants.CATEGORY_SAVE,
             category: category
         });
     }
 
-    deleteCategory(id) {
+    delete(id) {
         AppDispatcher.dispatch({
             actionType: CategoryConstants.CATEGORY_DELETE,
             id: id

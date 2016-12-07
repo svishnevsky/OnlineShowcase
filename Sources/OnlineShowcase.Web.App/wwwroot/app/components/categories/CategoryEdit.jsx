@@ -1,65 +1,108 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
+import '../../utils/ModalStyles'
 import CategoryActions from '../../actions/CategoryActions'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
+import BlockUi from 'react-block-ui'
+import 'react-block-ui/style.css'
+import Validation from 'react-validation';
 
-function getState(){
-    return {
-        id: null,
-        name: null
-    };
+
+function getSaved(){
+    return CategoriesStore.getSaved();
 }
 
 export default class CategoryEdit extends Component {
     constructor() {
         super();
+
         this.save = this.save.bind(this);
-        this.close = this.close.bind(this);
-        this.updateName = this.updateName.bind(this);
-
-        this.state = getState();
-
-        this._onChange = this._onChange.bind(this);
+        this._getState = this._getState.bind(this);
+        this._onSaved = this._onSaved.bind(this);
+        this._onLoaded = this._onLoaded.bind(this);
     }
 
-save() {
-    CategoryActions.saveCategory({
-        id: this.state.id,
-        name: this.state.name
-    });
-}
+    save() {
+        const state = this.state;
+        state.isLoading = true;
+        this.setState(state);
 
-close() {
-    browserHistory.goBack();
-}
+        CategoryActions.save({
+            parentId: this.state.parentId,
+            id: this.state.id,
+            name: this.form.components.name.state.value
+        });this.props.params.categoryId
+    }
 
-updateName(e) {
-    const state = this.state;
-    state.name = e.target.value;
-    this.setState(state);
-}
+    close() {
+        browserHistory.goBack();
+    }
+    
+    componentWillMount() {
+        this.state = this._getState();
 
-componentWillMount() {
-    CategoriesStore.addSaveListener(this._onChange);
-}
+        CategoriesStore.addSavedListener(this._onSaved);
+        CategoriesStore.addAllLoadedListener(this._onLoaded);
+    }
 
-componentWillUnmount() {
-    CategoriesStore.removeSaveListener(this._onChange);
-}
+    componentWillUnmount() {
+        CategoriesStore.removeSavedListener(this._onSaved);
+        CategoriesStore.removeAllLoadedListener(this._onLoaded);
+    }
+
+    handleSubmit(event){
+        event.preventDefault();
+        this.save();
+    }
 
     render() {
         return (
-            <Modal isOpen={true}>
-            <label htmlFor='name'>Name:</label>
-            <input type='text' id='name' placeholder='Type category name' onChange={this.updateName} />
-            <button onClick={this.save}>Save</button>
-            <button onClick={this.close}>Cancel</button>
-            </Modal>
+            <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
+                <h3>{this.state.id ? 'Update category' : 'Create new category'}</h3>
+                <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
+            <label htmlFor='name'>Name*</label>
+            <Validation.components.Input type='text' id='name' value={this.state.name} placeholder='Type category name' name='name' validations={['required']} errorClassName='validation-error' />
+            <div className='btn-group'>
+<Validation.components.Button>Save</Validation.components.Button>
+<a onClick={this.close} className='button'>Cancel</a>
+                </div>
+</Validation.components.Form>
+</BlockUi>
+</Modal>
         )
-            }
+}
 
-_onChange(){
+_getState() {
+    const isNewChild = this.props.params.categoryId && this.props.route.isNewChild;
+    const category = !this.props.params.categoryId || isNewChild ? null : CategoriesStore.getCategory(this.props.params.categoryId);
+    return {
+        isLoading: this.props.params.categoryId && !isNewChild && !category ? true : false,
+        id: category ? category.id : null,
+        parentId: isNewChild ? this.props.params.categoryId : category ? category.parentId : null,
+        name: category ? category.name : ''
+    };   
+}
 
+_onSaved(){
+    const saved = getSaved();
+    const state = this.state;
+
+    state.isLoading = false;
+    this.setState(state);
+
+    if (saved.status == 400){
+        for(let name in saved.data){
+            this.form.showError(name, saved.data[name][0]);
+        }
+    }
+
+    if (saved.status == 200 || saved.status == 201){
+        this.close();
+    }
+}
+
+_onLoaded() {
+    this.setState(this._getState());
 }
 }
