@@ -11,12 +11,17 @@ export default class ProductList extends Component {
         this._getState = this._getState.bind(this);
         this._onFound = this._onFound.bind(this);
 
-        this.state = this._getState();
+        this.state = {
+            products:[]
+        }
     }
 
     componentWillMount() {
         ProductsStore.addFoundListener(this._onFound);
-        ProductActions.find();
+        ProductActions.find(!this.props.params || !this.props.params.categoryId ? null
+            : {
+                categories: [this.props.params.categoryId]
+            });
     }
 
     componentWillUnmount() {
@@ -62,20 +67,20 @@ export default class ProductList extends Component {
                       <p>{product.summary}</p>
              </div>
           </div>
-            })
+        })
         }
         <div className='clearfix'> </div>
       </div>
       </div>);
-    }
+        }
 
     _getState() {
         return {
             products: ProductsStore.getFound()
         };
-    }
+        }
 
     _onFound() {
         this.setState(this._getState());
-    }
-}
+        }
+        }

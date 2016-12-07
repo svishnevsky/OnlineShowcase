@@ -42,12 +42,13 @@ class HttpClientClass {
 
 export class Request {
     constructor(method, path, data = null, requiresAuth = false) {
+        this._setData = this._setData.bind(this);
+        this.setHeader = this.setHeader.bind(this);
+
         this.method = method;
         this.path = path;
-        this.data = data;
+        this._setData(data);
         this.requiresAuth = requiresAuth;
-
-        this.setHeader = this.setHeader.bind(this);
         this.headers = {
             "Content-Type" : "application/json; charset=UTF-8",
             "Accept" : "application/json"
@@ -56,6 +57,25 @@ export class Request {
 
     setHeader(name, value){
         this.headers[name] = value;
+    }
+
+    _setData(data) {
+        if (!data) {
+            return;
+        }
+
+        if (this.method !== 'GET') {
+            this.data = data;
+            return;
+        }
+
+        let path = `${this.path}?`;
+
+        for (let key in data) {
+            path = `${path}${key}=${!Array.isArray(data[key]) ? data[key] : `[${data[key].join(',')}]`}&`;
+        }
+
+        this.path = path.slice(0, -1);
     }
 }
 
