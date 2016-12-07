@@ -22,8 +22,8 @@ export default class ProductView extends Component {
         this._getState = this._getState.bind(this);
         this._onSaved = this._onSaved.bind(this);
         this._onGot = this._onGot.bind(this);
-    }    
-    
+    }
+
     save() {
         const state = this.state;
         state.isLoading = true;
@@ -71,7 +71,7 @@ export default class ProductView extends Component {
         }
 
         var category = this.state.notAddedCategories.find(c => c.id == this.state.selectedCategoryId);
-        
+
         const state = this.state;
         this.state.notAddedCategories.splice(this.state.notAddedCategories.indexOf(category), 1);
         this.state.categories.push(category);
@@ -125,7 +125,7 @@ export default class ProductView extends Component {
                                     <select onChange={this.selectCategoryChanged}>
                                         <option>Select category</option>
                                     {!this.state.notAddedCategories ? null : this.state.notAddedCategories.map(c => {
-                                            return <option key={c.id} value={c.id}>{c.name}</option>    
+                                            return <option key={c.id} value={c.id}>{c.name}</option>
                                     })}
                                     </select>
                                     <button onClick={this.addCategory}>add</button>
@@ -139,10 +139,10 @@ export default class ProductView extends Component {
                                     {paragraphs.map((p, i) => {
                                     return <p className='m_text view-element' key={i}>{p}</p>
                                     })}
-                            
+
                             <Validation.components.Textarea className='edit-element' id='description' value={this.state.description} placeholder='Type description' name='description' validations={['required']} errorClassName='validation-error' />
                         </div>
-                        
+
                         <div className='btn-group edit-element'>
                             <Validation.components.Button>Save</Validation.components.Button>
                             <a onClick={this.close} className='button'>Cancel</a>
@@ -183,7 +183,6 @@ _getState() {
 _onSaved(){
     const saved = getSaved();
     const state = this.state;
-
     state.isLoading = false;
     this.setState(state);
 
@@ -193,12 +192,12 @@ _onSaved(){
                                     }
                                     }
 
-    if (saved.status == 200 || saved.status == 201){
+    if (saved.status == 200 || saved.status == 201 || saved.status == 204){
         this.close();
                                     }
                                     }
 
 _onGot() {
     this.setState(this._getState());
-                                    } 
+                                    }
                                     }
