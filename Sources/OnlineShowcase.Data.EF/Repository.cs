@@ -3,23 +3,26 @@ using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Data.SqlClient;
+using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
 {
     public abstract class Repository<TEntity> : ISafeRepository<TEntity>, IUnsafeRepository<TEntity> where TEntity : BaseModel
     {
-        private readonly DataContext context;
+        protected readonly DataContext Context;
 
-        protected IQueryable<TEntity> Query => this.context.Set<TEntity>().AsExpandable();
+        protected IQueryable<TEntity> Query => this.Context.Set<TEntity>().AsExpandable();
 
         protected Repository(DataContext context)
         {
-            this.context = context;
+            this.Context = context;
         }
 
-        public virtual async Task<TEntity[]> Get()
+        public virtual async Task<TEntity[]> Get(IFilter<TEntity> filter = null)
         {
-            return await this.Query.ToArrayAsync();
+            return await (filter == null ? this.Query : filter.Apply(this.Query)).ToArrayAsync();
         }
 
         public virtual async Task<TEntity> Get(int id)
@@ -29,18 +32,18 @@ namespace OnlineShowcase.Data.EF
 
         public virtual async Task<int> Add(TEntity entity)
         {
-            var entry = this.context.Set<TEntity>().Add(entity).Entity;
-            await this.context.SaveChangesAsync();
+            var entry = this.Context.Set<TEntity>().Add(entity).Entity;
+            await this.Context.SaveChangesAsync();
 
             return entry.Id;
         }
 
         public virtual async Task<int> Update(TEntity entity)
         {
-            var entry = this.context.Attach(entity);
-            entry.State = EntityState.Modified;
+            var entry = this.Attach(entity);
+            entry.Property("Created").IsModified = false;
 
-            return await this.context.SaveChangesAsync();
+            return await this.Context.SaveChangesAsync();
         }
 
         public virtual async Task<int> Delete(int id)
@@ -52,9 +55,24 @@ namespace OnlineShowcase.Data.EF
                 return 0;
             }
 
-            this.context.Set<TEntity>().Remove(entity);
+            this.Context.Set<TEntity>().Remove(entity);
 
-            return await this.context.SaveChangesAsync();
+            return await this.Context.SaveChangesAsync();
+        }
+
+        protected virtual EntityEntry<TEntity> Attach(TEntity entity)
+        {
+            var entry = this.Context.Attach(entity);
+            entry.State = EntityState.Modified;
+
+            return entry;
+        }
+
+        // ReSharper disable once InconsistentNaming
+        protected async Task<int> ExecSP(string name, params SqlParameter[] parameters)
+        {
+            var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));
+            return await this.Context.Database.ExecuteSqlCommandAsync($"{name} {paramNames}", parameters: parameters);
         }
     }
 }
