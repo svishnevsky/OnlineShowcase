@@ -14,9 +14,9 @@ namespace OnlineShowcase.Core.Services
         {
         }
 
-        public override async Task<IEnumerable<Category>> Get()
+        public override async Task<IEnumerable<Category>> Get<TFilter>(TFilter filter = null)
         {
-            var categories = (await base.Get()).ToArray();
+            var categories = (await base.Get(filter)).ToArray();
 
             var leaves = categories.Where(c => c.ParentId.HasValue)
                 .GroupBy(c => c.ParentId.Value)

@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using OnlineShowcase.Core.Filtering;
 using OnlineShowcase.Data;
+using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Core.Services
 {
@@ -21,9 +23,9 @@ namespace OnlineShowcase.Core.Services
             this.Mapper = mapper;
         }
 
-        public virtual async Task<IEnumerable<TModel>> Get()
+        public virtual async Task<IEnumerable<TModel>> Get<TFilter>(TFilter filter = null) where TFilter : Filter
         {
-            var result = await this.SafeRepository.Get();
+            var result = await this.SafeRepository.Get(this.Mapper.Map<TFilter, IFilter<TEntity>>(filter));
 
             return result?.Select(e => this.Mapper.Map<TModel>(e)) ?? Enumerable.Empty<TModel>();
         }

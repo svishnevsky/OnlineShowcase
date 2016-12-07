@@ -17,8 +17,9 @@ namespace OnlineShowcase.Data.EF.Configuration
 
             this.Builder.Property(e => e.Id).HasColumnName(keyColumnName).UseSqlServerIdentityColumn();
 
-            this.Builder
-                .HasKey(e => e.Id).HasName(keyColumnName);
+            this.Builder.HasKey(e => e.Id).HasName(keyColumnName);
+
+            this.Builder.Property(e => e.Created).HasDefaultValueSql("getutcdate()");
         }
     }
 }

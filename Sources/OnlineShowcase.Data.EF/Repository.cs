@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Data.SqlClient;
+using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
 {
@@ -19,9 +20,9 @@ namespace OnlineShowcase.Data.EF
             this.Context = context;
         }
 
-        public virtual async Task<TEntity[]> Get()
+        public virtual async Task<TEntity[]> Get(IFilter<TEntity> filter = null)
         {
-            return await this.Query.ToArrayAsync();
+            return await (filter == null ? this.Query : filter.Apply(this.Query)).ToArrayAsync();
         }
 
         public virtual async Task<TEntity> Get(int id)
@@ -40,6 +41,7 @@ namespace OnlineShowcase.Data.EF
         public virtual async Task<int> Update(TEntity entity)
         {
             var entry = this.Attach(entity);
+            entry.Property("Created").IsModified = false;
 
             return await this.Context.SaveChangesAsync();
         }
@@ -66,6 +68,7 @@ namespace OnlineShowcase.Data.EF
             return entry;
         }
 
+        // ReSharper disable once InconsistentNaming
         protected async Task<int> ExecSP(string name, params SqlParameter[] parameters)
         {
             var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));

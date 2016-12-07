@@ -8,11 +8,20 @@ namespace OnlineShowcase.Data.EF
 {
     public class DataContext : DbContext
     {
+        private static readonly object LockObj = new object();
+
         public DataContext(DbContextOptions options) : base(options)
         {
             base.ChangeTracker.AutoDetectChangesEnabled = false;
             base.Database.AutoTransactionsEnabled = true;
-            base.Database.Migrate();
+
+            lock (LockObj)
+            {
+                if (base.Database.GetPendingMigrations().Any())
+                {
+                    base.Database.Migrate();
+                }
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
