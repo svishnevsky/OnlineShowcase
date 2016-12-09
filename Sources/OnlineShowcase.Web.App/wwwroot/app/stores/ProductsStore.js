@@ -10,7 +10,25 @@ const FOUND_EVENT = 'product_found';
 
 const productsRepository = new ProductsRepository();
 
-const state = {};
+const state = {
+    filter: {
+        skip: 0,
+        take: 20,
+        sort: 'viewcount:desc'
+    }
+};
+
+const isSameArrays = (a, b) => {
+    if (!a && !b) {
+        return true;
+    }
+
+    if ((a && !b) || (!a && b)) {
+        return false;
+    }
+
+    return a.filter(x => b.indexOf(x) === -1).length === 0;
+}
 
 function saveProduct(product) {
     productsRepository.save(product).then(response => {
@@ -19,12 +37,14 @@ function saveProduct(product) {
             data: response.data
         };
 
+        findProducts(state.filter, true);
         ProductsStore.emitSaved();
     });
 }
 
 function deleteProduct(id){
     productsRepository.delete(id).then(() => {
+        findProducts(state.filter, true);
         ProductsStore.emitDeleted();
     });
 }
@@ -37,9 +57,24 @@ function getProduct(id){
     });
 }
 
-function findProducts(filter){
+function findProducts(filter, force) {
+    console.log(filter);
+    if (!force && state.found && state.filter.skip === filter.skip && state.filter.take === filter.take && state.filter.sort === filter.sort && isSameArrays(state.filter.categories, filter.categories)) {
+            return;
+    }
+
+    if (force) {
+        filter.skip = 0;
+    }
+
+    state.filter = filter;
+
     productsRepository.find(filter).then(response => {
-        state.found = response.data;
+        if (state.filter.skip === 0 || !state.found) {
+            state.found = response.data;
+        } else {
+            state.found.push(response.data);
+        }
 
         ProductsStore.emitFound();
     });
@@ -104,6 +139,10 @@ class ProductsStoreClass extends EventEmitter {
 
     getFound() {
         return state.found;
+    }
+
+    getLatestFilter() {
+        return Object.assign({}, state.filter);
     }
 }
 

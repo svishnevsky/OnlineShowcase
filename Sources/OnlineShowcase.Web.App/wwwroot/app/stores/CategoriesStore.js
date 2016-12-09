@@ -32,7 +32,6 @@ function getCategories(){
     categoryRepository.get().then(response => {
         state.categories = response.data;
         state.categoryMap = {};
-
         for (let category of state.categories) {
             state.categoryMap[category.id] = category;
 

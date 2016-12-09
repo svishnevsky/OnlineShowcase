@@ -72,6 +72,10 @@ export class Request {
         let path = `${this.path}?`;
 
         for (let key in data) {
+            if (!data[key]) {
+                continue;
+            }
+
             path = `${path}${key}=${!Array.isArray(data[key]) ? data[key] : `[${data[key].join(',')}]`}&`;
         }
 

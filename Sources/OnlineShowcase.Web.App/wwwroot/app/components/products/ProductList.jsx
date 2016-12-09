@@ -1,31 +1,32 @@
 ﻿import React, { Component } from 'react'
 import { Link } from 'react-router'
 import ProductsStore from '../../stores/ProductsStore'
+import CategoriesStore from '../../stores/CategoriesStore'
 import ProductActions from '../../actions/ProductActions'
 import ManageIcons from '../app/ManageIcons'
 
 export default class ProductList extends Component {
     constructor() {
         super();
-
         this._getState = this._getState.bind(this);
         this._onFound = this._onFound.bind(this);
+        this._changeCategory = this._changeCategory.bind(this);
 
-        this.state = {
-            products:[]
-        }
+        this.state = this._getState();
     }
 
     componentWillMount() {
         ProductsStore.addFoundListener(this._onFound);
-        ProductActions.find(!this.props.params || !this.props.params.categoryId ? null
-            : {
-                categories: [this.props.params.categoryId]
-            });
+        CategoriesStore.addAllLoadedListener(this._changeCategory);
+    }
+
+    componentWillReceiveProps(props) {
+        this._changeCategory(props);
     }
 
     componentWillUnmount() {
         ProductsStore.removeFoundListener(this._onFound);
+        CategoriesStore.removeAllLoadedListener(this._changeCategory);
     }
 
     render() {
@@ -54,8 +55,8 @@ export default class ProductList extends Component {
   </div>
 
         {!this.state.products ? null :
-            this.state.products.map(product => {
-                return <div className='product-grid' key={product.id}>
+                this.state.products.map(product => {
+                    return <div className='product-grid' key={product.id}>
                    <ManageIcons basePath={`products/${product.id}`}/>
                    <div className='content_box'>
                       <Link to={`products/${product.id}`}>
@@ -76,11 +77,38 @@ export default class ProductList extends Component {
 
     _getState() {
         return {
-            products: ProductsStore.getFound()
+            products: ProductsStore.getFound(),
+            filter: ProductsStore.getLatestFilter()
         };
         }
 
     _onFound() {
         this.setState(this._getState());
+        }
+
+    _changeCategory(props = this.props) {
+        const state = this.state;
+
+        const categoryId = !props.params || !props.params.categoryId ? null : props.params.categoryId;
+        console.log(categoryId);
+        if (categoryId) {
+            const category = CategoriesStore.getCategory(categoryId);
+            if (!category) {
+                return;
+            }
+
+            const categories = [categoryId];
+
+            for (let child of category.children) {
+                categories.push(child.id);
+        }
+            state.filter.categories = categories;
+        } else {
+            state.filter.categories = null;
+        }
+
+        ProductActions.find(state.filter);
+
+        this.setState(state);
         }
         }
