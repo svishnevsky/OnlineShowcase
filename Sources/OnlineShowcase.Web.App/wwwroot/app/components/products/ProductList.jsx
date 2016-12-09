@@ -33,13 +33,11 @@ export default class ProductList extends Component {
         return (<div className='women-product'>
                     <div className=' w_content'>
             <div className='women'>
-                <a href='#'><h4>Enthecwear - <span>4449 itemms</span> </h4></a>
+                <h4>{!this.state.category ? null : `${this.state.category.name} -`}<span>{!this.state.count ? null : `${this.state.count} items`}</span> </h4>
                 <ul className='w_nav'>
                     <li>Sort : </li>
         <li><a className='active' href='#'>popular</a></li> |
-        <li><a href='#'>new </a></li> |
-        <li><a href='#'>discount</a></li> |
-        <li><a href='#'>price: Low High </a></li>
+        <li><a href='#'>new </a></li>
     <div className='clearfix'> </div>
     </ul>
     <div className='clearfix'> </div>
@@ -90,9 +88,10 @@ export default class ProductList extends Component {
         const state = this.state;
 
         const categoryId = !props.params || !props.params.categoryId ? null : props.params.categoryId;
-        console.log(categoryId);
+        
         if (categoryId) {
             const category = CategoriesStore.getCategory(categoryId);
+            state.category = category;
             if (!category) {
                 return;
             }
@@ -104,6 +103,7 @@ export default class ProductList extends Component {
         }
             state.filter.categories = categories;
         } else {
+            state.filter.category = null;
             state.filter.categories = null;
         }
 

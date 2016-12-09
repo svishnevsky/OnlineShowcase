@@ -58,7 +58,6 @@ function getProduct(id){
 }
 
 function findProducts(filter, force) {
-    console.log(filter);
     if (!force && state.found && state.filter.skip === filter.skip && state.filter.take === filter.take && state.filter.sort === filter.sort && isSameArrays(state.filter.categories, filter.categories)) {
             return;
     }

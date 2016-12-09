@@ -343,7 +343,7 @@ ul.cute li {
 
 .sub-cate {
     width: 320px;
-    margin: 2em 2em 0 0;
+    margin: 0 2em 0 0;
     position: fixed;
 }
 
@@ -801,13 +801,21 @@ p.m_text {
     padding-left: 340px;
 }
 
+.women-product .w_content {
+    position: fixed;
+    width: 800px;
+    height: 50px;
+    background-color: #ffffff;
+    z-index: 9999;
+    border-bottom: 1px solid #ebebeb;
+}
+
 .women_main {
     padding: 2em 0;
 }
 
 .women {
     text-align: left;
-    border-bottom: 1px solid #ebebeb;
 }
 
     .women h4 {
@@ -815,10 +823,6 @@ p.m_text {
         font-size: 1em;
         text-transform: uppercase;
         color: #333333;
-    }
-
-    .women h4 {
-        color: #555555;
     }
 
 .w_nav {
@@ -844,9 +848,14 @@ p.m_text {
                 color: #00405d;
             }
 
+            .w_nav li a.active {
+                font-weight: bold;
+            }
+
 .grid-product {
     display: block;
     margin: 2% 0;
+    padding-top: 50px;
 }
 
 .product-grid .icon-group {
