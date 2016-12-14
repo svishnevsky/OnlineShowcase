@@ -866,6 +866,13 @@ p.m_text {
     padding-top: 50px;
 }
 
+.grid-product .av-block-ui {
+    display: block;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+}
+
 .product-grid .icon-group {
     float: left;
 }
@@ -898,6 +905,8 @@ p.m_text {
 .product-grid {
     float: left;
     width: 33.333%;
+    height: 326px;
+    display: block;
 }
 
 .left-grid-view {
@@ -1837,7 +1846,7 @@ select.in-drop {
         padding: 0 0 0 24.5em;
     }
 
-    .product-grid {
+    .product-grid, .grid-product .av-block-ui {
         width: 50%;
     }
 

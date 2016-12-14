@@ -1,11 +1,9 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
-import '../../utils/ModalStyles'
 import ProductActions from '../../actions/ProductActions'
 import ProductsStore from '../../stores/ProductsStore'
 import { browserHistory } from 'react-router'
 import BlockUi from 'react-block-ui'
-import 'react-block-ui/style.css'
 
 export default class ProductDelete extends Component {
     constructor() {
@@ -21,7 +19,7 @@ export default class ProductDelete extends Component {
     
     componentWillMount() {
         this.state = {
-            id: this.props.params.id,
+            id: this.props.params.productId,
             isLoading: false
         }
 
@@ -42,7 +40,7 @@ export default class ProductDelete extends Component {
 
     render() {
         return (
-             <Modal isOpen={true}>
+             <Modal isOpen={true} contentLabel={''}>
                  <BlockUi tag='div' blocking={this.state.isLoading}>
                      <h3>Are you sure?</h3>
                      <div className='btn-group'>

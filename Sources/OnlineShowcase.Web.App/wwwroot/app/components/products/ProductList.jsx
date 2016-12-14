@@ -4,6 +4,8 @@ import ProductsStore from '../../stores/ProductsStore'
 import CategoriesStore from '../../stores/CategoriesStore'
 import ProductActions from '../../actions/ProductActions'
 import ManageIcons from '../app/ManageIcons'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import BlockUi from 'react-block-ui'
 
 export default class ProductList extends Component {
     constructor() {
@@ -11,6 +13,7 @@ export default class ProductList extends Component {
         this._getState = this._getState.bind(this);
         this._onFound = this._onFound.bind(this);
         this._updateProps = this._updateProps.bind(this);
+        this.loadMore = this.loadMore.bind(this);
 
         this.state = this._getState();
     }
@@ -36,88 +39,105 @@ export default class ProductList extends Component {
                 <h4>{!this.state.category ? null : this.state.category.name}<span>{!this.state.count ? null : `${this.state.count} items`}</span> </h4>
                 <ul className='w_nav'>
                     <li>Sort : </li>
-                    {this.props.sorts.map(s => {
-                        return <li key={s}>{!this.state.filter || this.state.filter.sort == s ? <span>{s}</span> : <Link to={this.props.location.pathname} query={Object.assign({}, this.props.location.query, {'sort': s})}>{s}</Link>}</li>
-                    })}
+    {this.props.sorts.map(s => {
+        return <li key={s}>{!this.state.filter || this.state.filter.sort === s ? <span>{s}</span> : <Link to={this.props.location.pathname} query={Object.assign({}, this.props.location.query, {'sort': s})}>{s}</Link>}</li>
+    })}
 
-    </ul>
+</ul>
+<div className='clearfix'> </div>
+</div>
+</div>
+<div className='grid-product'>
+   <div className='product-grid edit-element'>
+      <div className='content_box'>
+         <Link to='products/new'>
+               <img src='/images/plus.svg' className='img-responsive' alt='Add new product'/>
+         </Link>
+     </div>
+  </div>
+
+<InfiniteScroll
+    next={this.loadMore}
+    endMessage={<span/>}
+    hasMore={this.state.hasMore}
+    style={{overflow:'inherit'}}
+    loader={<div className='product-grid'><BlockUi tag='div' blocking={true}/><div className='clearfix'></div></div>}>
+    {this.state.products}
+  </InfiniteScroll>
     <div className='clearfix'> </div>
-    </div>
-    </div>
-    <div className='grid-product'>
-       <div className='product-grid edit-element'>
-          <div className='content_box'>
-             <Link to='products/new'>
-                   <img src='/images/plus.svg' className='img-responsive' alt='Add new product'/>
-             </Link>
+  </div>
+  </div>);
+}
+
+loadMore() {
+    const filter = this.state.filter;
+    filter.skip += filter.take;
+    ProductActions.find(filter);
+}
+
+_getState() {
+    const found = ProductsStore.getFound();
+    return Object.assign({}, this.state, {
+        filter: found ? found.filter : ProductsStore.getDefaultFilter(),
+        products: !found ? [] : found.filter.skip === 0 ? found.products.map(this._renderProduct) : this.state.products.concat(found.products.map(this._renderProduct)),
+        hasMore: !found || found.products.length === found.filter.take
+    });
+}
+
+               _renderProduct(product) {
+                   return <div className='product-grid' key={product.id}>
+               <ManageIcons basePath={`products/${product.id}`}/>
+               <div className='content_box'>
+                  <Link to={`products/${product.id}`}>
+                     <div className='left-grid-view grid-view-left'>
+                        <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                    </div>
+                  </Link>
+                  <h4>{product.name}</h4>
+                  <p>{product.summary}</p>
          </div>
       </div>
+               }
 
-        {!this.state.products ? null :
-                this.state.products.map(product => {
-                    return <div className='product-grid' key={product.id}>
-                   <ManageIcons basePath={`products/${product.id}`}/>
-                   <div className='content_box'>
-                      <Link to={`products/${product.id}`}>
-                         <div className='left-grid-view grid-view-left'>
-                            <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                        </div>
-                      </Link>
-                      <h4>{product.name}</h4>
-                      <p>{product.summary}</p>
-             </div>
-          </div>
-        })
-        }
-        <div className='clearfix'> </div>
-      </div>
-      </div>);
-        }
+_onFound() {
+    this.setState(this._getState());
+}
 
-    _getState() {
-        return {
-            products: ProductsStore.getFound(),
-            filter: ProductsStore.getLatestFilter()
-        };
-        }
+_updateProps(props = this.props) {
+    const state = this.state;
 
-    _onFound() {
-        this.setState(this._getState());
-        }
+    const categoryId = !props.params || !props.params.categoryId ? null : props.params.categoryId;
 
-    _updateProps(props = this.props) {
-        const state = this.state;
+    if (categoryId) {
+        const category = CategoriesStore.getCategory(categoryId);
+        state.category = category;
+        if (!category) {
+            return;
+               }
 
-        const categoryId = !props.params || !props.params.categoryId ? null : props.params.categoryId;
+        const categories = [categoryId];
 
-        if (categoryId) {
-            const category = CategoriesStore.getCategory(categoryId);
-            state.category = category;
-            if (!category) {
-                return;
-        }
+        for (let child of category.children) {
+            categories.push(child.id);
+               }
+        state.filter.categories = categories;
+               } else {
+        state.category = null;
+        state.filter.categories = null;
+               }
 
-            const categories = [categoryId];
+    if (props.location.query.sort) {
+        state.filter.sort = props.location.query.sort;
+               }
 
-            for (let child of category.children) {
-                categories.push(child.id);
-        }
-            state.filter.categories = categories;
-        } else {
-            state.filter.category = null;
-            state.filter.categories = null;
-        }
+    state.filter.skip = 0;
 
-        if (props.location.query.sort) {
-            state.filter.sort = props.location.query.sort;
-        }
+    ProductActions.find(state.filter);
 
-        ProductActions.find(state.filter);
-
-        this.setState(state);
-    }
-        }
+    this.setState(state);
+               }
+               }
 
 ProductList.defaultProps = {
-    sorts : ProductsStore.getAvailableSorts()
-}
+                   sorts : ProductsStore.getAvailableSorts()
+               }

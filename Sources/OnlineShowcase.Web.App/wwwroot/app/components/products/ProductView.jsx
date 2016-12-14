@@ -4,7 +4,6 @@ import ProductsStore from '../../stores/ProductsStore'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory, Link } from 'react-router'
 import BlockUi from 'react-block-ui'
-import 'react-block-ui/style.css'
 import Validation from 'react-validation';
 
 function getSaved(){

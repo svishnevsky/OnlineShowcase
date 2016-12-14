@@ -13,8 +13,8 @@ const productsRepository = new ProductsRepository();
 const state = {
     filter: {
         skip: 0,
-        take: 20,
-        sort: 'viewcount:desc'
+        take: 3,
+        sort: 'popular'
     },
     availableSorts: {
         'new': 'created:desc',
@@ -64,23 +64,23 @@ function getProduct(id){
 function findProducts(filter, force) {
     const sort = !filter.sort ? null : state.availableSorts[filter.sort];
 
-    if (!force && state.found && state.filter.skip === filter.skip && state.filter.take === filter.take && state.filter.sort === sort && isSameArrays(state.filter.categories, filter.categories)) {
-            return;
+    if (!force && state.found && state.found.filter.skip === filter.skip && state.found.filter.take === filter.take && state.found.filter.sort === sort && isSameArrays(state.found.filter.categories, filter.categories)) {
+        return;
     }
-
+    
+    const newfilter = Object.assign({}, filter);
+    newfilter.sort = sort;
+    
     if (force) {
-        filter.skip = 0;
+        newfilter.skip = 0;
     }
 
-    state.filter = Object.assign({}, filter);
-    state.filter.sort = sort;
-
-    productsRepository.find(state.filter).then(response => {
-        if (state.filter.skip === 0 || !state.found) {
-            state.found = response.data;
-        } else {
-            state.found.push(response.data);
-        }
+    productsRepository.find(newfilter).then(response => {
+        newfilter.sort = filter.sort;
+        state.found = {
+            products: response.data,
+            filter: newfilter
+        };
 
         ProductsStore.emitFound();
     });
@@ -147,20 +147,8 @@ class ProductsStoreClass extends EventEmitter {
         return state.found;
     }
 
-    getLatestFilter() {
-        const currentFilter = Object.assign({}, state.filter);
-        if (!state.filter.sort) {
-            return currentFilter;
-        }
-
-        for (let key in state.availableSorts) {
-            if (state.availableSorts[key] === currentFilter.sort) {
-                currentFilter.sort = key;
-                break;
-            }
-        }
-
-        return currentFilter;
+    getDefaultFilter() {
+        return Object.assign({}, state.filter);
     }
 
     getAvailableSorts() {

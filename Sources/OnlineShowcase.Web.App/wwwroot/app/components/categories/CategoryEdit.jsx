@@ -1,11 +1,9 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
-import '../../utils/ModalStyles'
 import CategoryActions from '../../actions/CategoryActions'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
 import BlockUi from 'react-block-ui'
-import 'react-block-ui/style.css'
 import Validation from 'react-validation';
 
 
@@ -58,7 +56,7 @@ export default class CategoryEdit extends Component {
 
     render() {
         return (
-            <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
+            <Modal isOpen={true} contentLabel={''}><BlockUi tag='div' blocking={this.state.isLoading}>
                 <h3>{this.state.id ? 'Update category' : 'Create new category'}</h3>
                 <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
             <label htmlFor='name'>Name*</label>

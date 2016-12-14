@@ -41,6 +41,7 @@
     "react-block-ui": "0.2.0",
     "react-bootstrap": "^0.29.5",
     "react-dom": "^15.4.1",
+    "react-infinite-scroll-component": "^2.0.1",
     "react-modal": "^1.5.2",
     "react-router": "^2.4.1",
     "react-validation": "^2.10.9"

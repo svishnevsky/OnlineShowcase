@@ -13,6 +13,8 @@ import ProductView from './components/products/ProductView.jsx'
 import AuthService from './utils/AuthService';
 import UserStore from './stores/UserStore';
 import './utils/ValidationRules'
+import 'react-block-ui/style.css'
+import './utils/ModalStyles'
 
 const auth = new AuthService('27SWqPeKuUfca8sdmhywNLGmHDYjlTmL', 'vishnevsky.eu.auth0.com');
 
@@ -42,6 +44,7 @@ render((
                 <Route path='new' component={ProductView} onEnter={requireContentManager} />
                 <Route path=':productId'>
                     <IndexRoute component={ProductView} />
+                    <Route path='edit' component={ProductView} onEnter={requireContentManager} />
                     <Route path='delete' component={ProductDelete} onEnter={requireContentManager} />
                 </Route>
             </Route>
