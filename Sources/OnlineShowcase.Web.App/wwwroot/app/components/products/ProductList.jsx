@@ -10,47 +10,48 @@ export default class ProductList extends Component {
         super();
         this._getState = this._getState.bind(this);
         this._onFound = this._onFound.bind(this);
-        this._changeCategory = this._changeCategory.bind(this);
+        this._updateProps = this._updateProps.bind(this);
 
         this.state = this._getState();
     }
 
     componentWillMount() {
         ProductsStore.addFoundListener(this._onFound);
-        CategoriesStore.addAllLoadedListener(this._changeCategory);
+        CategoriesStore.addAllLoadedListener(this._updateProps);
     }
 
     componentWillReceiveProps(props) {
-        this._changeCategory(props);
+        this._updateProps(props);
     }
 
     componentWillUnmount() {
         ProductsStore.removeFoundListener(this._onFound);
-        CategoriesStore.removeAllLoadedListener(this._changeCategory);
+        CategoriesStore.removeAllLoadedListener(this._updateProps);
     }
 
     render() {
         return (<div className='women-product'>
                     <div className=' w_content'>
             <div className='women'>
-                <h4>{!this.state.category ? null : `${this.state.category.name} -`}<span>{!this.state.count ? null : `${this.state.count} items`}</span> </h4>
+                <h4>{!this.state.category ? null : this.state.category.name}<span>{!this.state.count ? null : `${this.state.count} items`}</span> </h4>
                 <ul className='w_nav'>
                     <li>Sort : </li>
-        <li><a className='active' href='#'>popular</a></li> |
-        <li><a href='#'>new </a></li>
-    <div className='clearfix'> </div>
+                    {this.props.sorts.map(s => {
+                        return <li key={s}>{!this.state.filter || this.state.filter.sort == s ? <span>{s}</span> : <Link to={this.props.location.pathname} query={Object.assign({}, this.props.location.query, {'sort': s})}>{s}</Link>}</li>
+                    })}
+
     </ul>
     <div className='clearfix'> </div>
-</div>
-</div>
-<div className='grid-product'>
-   <div className='product-grid edit-element'>
-      <div className='content_box'>
-         <Link to='products/new'>
-               <img src='/images/plus.svg' className='img-responsive' alt='Add new product'/>
-         </Link>
-     </div>
-  </div>
+    </div>
+    </div>
+    <div className='grid-product'>
+       <div className='product-grid edit-element'>
+          <div className='content_box'>
+             <Link to='products/new'>
+                   <img src='/images/plus.svg' className='img-responsive' alt='Add new product'/>
+             </Link>
+         </div>
+      </div>
 
         {!this.state.products ? null :
                 this.state.products.map(product => {
@@ -84,17 +85,17 @@ export default class ProductList extends Component {
         this.setState(this._getState());
         }
 
-    _changeCategory(props = this.props) {
+    _updateProps(props = this.props) {
         const state = this.state;
 
         const categoryId = !props.params || !props.params.categoryId ? null : props.params.categoryId;
-        
+
         if (categoryId) {
             const category = CategoriesStore.getCategory(categoryId);
             state.category = category;
             if (!category) {
                 return;
-            }
+        }
 
             const categories = [categoryId];
 
@@ -107,8 +108,16 @@ export default class ProductList extends Component {
             state.filter.categories = null;
         }
 
+        if (props.location.query.sort) {
+            state.filter.sort = props.location.query.sort;
+        }
+
         ProductActions.find(state.filter);
 
         this.setState(state);
+    }
         }
-        }
+
+ProductList.defaultProps = {
+    sorts : ProductsStore.getAvailableSorts()
+}

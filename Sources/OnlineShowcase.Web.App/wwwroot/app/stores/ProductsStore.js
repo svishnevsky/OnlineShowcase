@@ -15,6 +15,10 @@ const state = {
         skip: 0,
         take: 20,
         sort: 'viewcount:desc'
+    },
+    availableSorts: {
+        'new': 'created:desc',
+        'popular': 'viewcount:desc'
     }
 };
 
@@ -58,7 +62,9 @@ function getProduct(id){
 }
 
 function findProducts(filter, force) {
-    if (!force && state.found && state.filter.skip === filter.skip && state.filter.take === filter.take && state.filter.sort === filter.sort && isSameArrays(state.filter.categories, filter.categories)) {
+    const sort = !filter.sort ? null : state.availableSorts[filter.sort];
+
+    if (!force && state.found && state.filter.skip === filter.skip && state.filter.take === filter.take && state.filter.sort === sort && isSameArrays(state.filter.categories, filter.categories)) {
             return;
     }
 
@@ -66,9 +72,10 @@ function findProducts(filter, force) {
         filter.skip = 0;
     }
 
-    state.filter = filter;
+    state.filter = Object.assign({}, filter);
+    state.filter.sort = sort;
 
-    productsRepository.find(filter).then(response => {
+    productsRepository.find(state.filter).then(response => {
         if (state.filter.skip === 0 || !state.found) {
             state.found = response.data;
         } else {
@@ -141,7 +148,23 @@ class ProductsStoreClass extends EventEmitter {
     }
 
     getLatestFilter() {
-        return Object.assign({}, state.filter);
+        const currentFilter = Object.assign({}, state.filter);
+        if (!state.filter.sort) {
+            return currentFilter;
+        }
+
+        for (let key in state.availableSorts) {
+            if (state.availableSorts[key] === currentFilter.sort) {
+                currentFilter.sort = key;
+                break;
+            }
+        }
+
+        return currentFilter;
+    }
+
+    getAvailableSorts() {
+        return Object.keys(state.availableSorts);
     }
 }
 

@@ -801,14 +801,14 @@ p.m_text {
     padding-left: 340px;
 }
 
-.women-product .w_content {
-    position: fixed;
-    width: 800px;
-    height: 50px;
-    background-color: #ffffff;
-    z-index: 9999;
-    border-bottom: 1px solid #ebebeb;
-}
+    .women-product .w_content {
+        position: fixed;
+        width: 800px;
+        height: 50px;
+        background-color: #ffffff;
+        z-index: 9999;
+        border-bottom: 1px solid #ebebeb;
+    }
 
 .women_main {
     padding: 2em 0;
@@ -836,21 +836,29 @@ p.m_text {
 
     .w_nav li {
         display: inline-block;
+        margin-left: 3px;
+        padding-right: 3px;
+        border-right: 1px solid;
     }
 
-        .w_nav li a {
-            display: block;
-            color: #555555;
-            text-transform: capitalize;
+    .w_nav li:first-child, .w_nav li:last-child {
+        border: none;
+    }
+
+    .w_nav li a, .w_nav li span {
+        display: block;
+        color: #555555;
+        text-transform: capitalize;
+    }
+
+        .w_nav li a:hover {
+            color: #00405d;
         }
 
-            .w_nav li a:hover {
-                color: #00405d;
-            }
-
-            .w_nav li a.active {
-                font-weight: bold;
-            }
+        .w_nav li span {
+            font-weight: bold;
+            font-size: 1.01em;
+        }
 
 .grid-product {
     display: block;
