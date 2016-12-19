@@ -2,7 +2,7 @@
 
 namespace OnlineShowcase.Core
 {
-    public interface ISafeImageManager : ISafeManager<Image>
+    public interface ISafeFileManager : ISafeManager<File>
     {
     }
 }

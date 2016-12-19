@@ -10,29 +10,14 @@ namespace OnlineShowcase.Data.EF.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(maxLength: 4000, nullable: false),
-                    Name = table.Column<string>(maxLength: 150, nullable: false),
-                    ViewCount = table.Column<int>(nullable: false, defaultValue: 0)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("ProductId", x => x.ProductId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
                     CategoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Created = table.Column<DateTime>(nullable: false, defaultValueSql: "getutcdate()"),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    ParentId = table.Column<int>(nullable: true),
-                    ProductId = table.Column<int>(nullable: true)
+                    ParentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,12 +28,39 @@ namespace OnlineShowcase.Data.EF.Migrations
                         principalTable: "Categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Categories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    FileId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Created = table.Column<DateTime>(nullable: false, defaultValueSql: "getutcdate()"),
+                    Name = table.Column<string>(nullable: false),
+                    Path = table.Column<string>(nullable: false),
+                    Reference = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("FileId", x => x.FileId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Created = table.Column<DateTime>(nullable: false, defaultValueSql: "getutcdate()"),
+                    Description = table.Column<string>(maxLength: 4000, nullable: false),
+                    ImageId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(maxLength: 150, nullable: false),
+                    ViewCount = table.Column<int>(nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("ProductId", x => x.ProductId);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,19 +98,26 @@ namespace OnlineShowcase.Data.EF.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_ProductId",
-                table: "Categories",
-                column: "ProductId");
+                name: "IX_Files_Path",
+                table: "Files",
+                column: "Path");
+            
+            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[IncrementProductViews] @ProductId int, @Increment int AS BEGIN SET NOCOUNT ON; UPDATE Products SET ViewCount = (ViewCount + @Increment) WHERE ProductId = @ProductId; END;");
 
-            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[IncrementProductViews] @ProductId int, @Increment int AS UPDATE Products SET ViewCount = (ViewCount + @Increment) WHERE ProductId = @ProductId");
+            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[AddFile] @Path nvarchar(1000), @Name nvarchar(50), @Reference nvarchar(1000), @FileId int OUTPUT AS BEGIN SET NOCOUNT ON; MERGE Files AS t USING (SELECT @Path, @Name) AS s (Path, Name) ON (t.Path = s.Path AND t.Name = s.Name) WHEN NOT MATCHED THEN INSERT (Path, Name, Reference) VALUES (@Path, @Name, @Reference); IF (@@ROWCOUNT = 1) SET @FileId = SCOPE_IDENTITY(); ELSE SELECT @FileId = FileId FROM Files f WITH (NOLOCK) WHERE f.Path = @Path AND f.Name = @Name; END;");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP PROCEDURE IF EXISTS [dbo].[IncrementProductViews]");
+            migrationBuilder.Sql("DROP PROCEDURE [dbo].[IncrementProductViews]");
+
+            migrationBuilder.Sql("DROP PROCEDURE [dbo].[AddFile]");
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");
+
+            migrationBuilder.DropTable(
+                name: "Files");
 
             migrationBuilder.DropTable(
                 name: "Categories");

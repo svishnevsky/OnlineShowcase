@@ -3,9 +3,9 @@ using OnlineShowcase.Data.Model;
 
 namespace OnlineShowcase.Data.EF.Configuration
 {
-    public class ImageConfiguration : EntityConfiguration<Image>
+    public class FileConfiguration : EntityConfiguration<File>
     {
-        public ImageConfiguration(ModelBuilder modelBuilder) : base(modelBuilder)
+        public FileConfiguration(ModelBuilder modelBuilder) : base(modelBuilder)
         {
         }
 
@@ -17,7 +17,7 @@ namespace OnlineShowcase.Data.EF.Configuration
             base.Builder.Property(p => p.Name).IsRequired();
             base.Builder.Property(p => p.Reference).IsRequired();
 
-            base.Builder.HasIndex(p => p.Path);
+            base.Builder.HasIndex(p => new { p.Path, p.Name }).IsUnique();
         }
     }
 }

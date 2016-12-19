@@ -24,6 +24,9 @@ namespace OnlineShowcase.Web.Api
             CreateMap<Product, Core.Model.Product>();
             CreateMap<Core.Model.Product, Product>();
 
+            CreateMap<Core.Model.File, Data.Model.File>();
+            CreateMap<Data.Model.File, Core.Model.File>();
+
             CreateMap<Core.Filtering.ProductFilter, IFilter<Data.Model.Product>>()
                 .ConstructUsing(
                     ctor => new Data.EF.Filtering.ProductFilter
@@ -38,6 +41,9 @@ namespace OnlineShowcase.Web.Api
 
             CreateMap<Core.Filtering.Filter, IFilter<Data.Model.Category>>()
                 .As<Data.EF.Filtering.CategoryFilter>();
+            
+            CreateMap<Core.Filtering.FileFilter, IFilter<Data.Model.File>>()
+                .As<Data.EF.Filtering.FileFilter>();
 
             CreateMap<Filter, Core.Filtering.Filter>();
             CreateMap<Filter, Core.Filtering.ProductFilter>()

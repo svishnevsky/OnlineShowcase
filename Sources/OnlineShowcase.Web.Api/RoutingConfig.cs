@@ -32,6 +32,8 @@ namespace OnlineShowcase.Web.Api
                 var name = type.Name.Replace("Controller", string.Empty);
                 builder.MapWebApiRoute(name, $"{name.ToLower().Pluralize()}/{{id:int}}", defaults: new { controller = name, action = "Index" });
             }
+
+            builder.MapWebApiRoute("FilesByPath", "files/{*path}", defaults: new {controller = "Files", action = "Index"});
         }
     }
 }

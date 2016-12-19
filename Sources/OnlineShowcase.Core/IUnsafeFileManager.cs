@@ -2,7 +2,7 @@
 
 namespace OnlineShowcase.Core
 {
-    public interface IUnsafeImageManager : IUnsafeManager<Image>
+    public interface IUnsafeFileManager : IUnsafeManager<File>
     {
     }
 }

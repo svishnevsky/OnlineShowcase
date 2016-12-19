@@ -2,7 +2,7 @@
 
 namespace OnlineShowcase.Data
 {
-    public interface ISafeImageRepository : ISafeRepository<Image>
+    public interface ISafeImageRepository : ISafeRepository<File>
     {
     }
 }

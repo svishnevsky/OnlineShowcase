@@ -1,6 +1,6 @@
 ﻿namespace OnlineShowcase.Data.Model
 {
-    public class Image : BaseModel
+    public class File : BaseModel
     {
         public string Path { get; set; }
 

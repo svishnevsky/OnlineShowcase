@@ -54,11 +54,11 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("OnlineShowcase.Data.Model.Image", b =>
+            modelBuilder.Entity("OnlineShowcase.Data.Model.File", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("ImageId")
+                        .HasColumnName("FileId")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
@@ -75,11 +75,11 @@ namespace OnlineShowcase.Data.EF.Migrations
                         .IsRequired();
 
                     b.HasKey("Id")
-                        .HasName("ImageId");
+                        .HasName("FileId");
 
                     b.HasIndex("Path");
 
-                    b.ToTable("Images");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("OnlineShowcase.Data.Model.Product", b =>

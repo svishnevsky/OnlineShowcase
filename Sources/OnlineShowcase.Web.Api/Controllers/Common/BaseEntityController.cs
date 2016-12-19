@@ -13,15 +13,9 @@ namespace OnlineShowcase.Web.Api.Controllers.Common
 
         protected readonly IMapper Mapper;
 
-        public string Name
-        {
-            get
-            {
-                return this.GetType().Name.Replace("Controller", string.Empty);
-            }
-        }
+        public string Name => this.GetType().Name.Replace("Controller", string.Empty);
 
-        public BaseEntityController(ISafeManager<TDomainModel> safeManager, IUnsafeManager<TDomainModel> unsafeManager, IMapper mapper)
+        protected BaseEntityController(ISafeManager<TDomainModel> safeManager, IUnsafeManager<TDomainModel> unsafeManager, IMapper mapper)
         {
             this.SafeManager = safeManager;
             this.UnsafeManager = unsafeManager;

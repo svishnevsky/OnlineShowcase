@@ -1,6 +1,6 @@
 ﻿namespace OnlineShowcase.Core.Model
 {
-    public class Image
+    public class File
     {
         public int Id { get; set; }
 
@@ -8,6 +8,6 @@
 
         public string Name { get; set; }
 
-        public int Reference { get; set; }
+        public string Reference { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using OnlineShowcase.Data.EF;
 using OnlineShowcase.Core.Reactive.Events;
 using OnlineShowcase.Core.Reactive.Subscribers;
 using OnlineShowcase.Core.Reactive;
+using OnlineShowcase.Web.Api.Services;
 
 namespace OnlineShowcase.Web.Api
 {
@@ -56,6 +57,11 @@ namespace OnlineShowcase.Web.Api
                 {
                     e.Instance.Subscribe(e.Context.Resolve<IObserver<ProductViewEvent>>());
                 })
+                .SingleInstance();
+
+            builder.RegisterType<FileProcessor>()
+                .WithParameter("uploadFolder", configuration["AppSettings:UploadFolder"])
+                .As<IFileProcessor>()
                 .SingleInstance();
 
             builder.Populate(services);

@@ -8,8 +8,8 @@ using OnlineShowcase.Data.EF;
 namespace OnlineShowcase.Data.EF.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20161217090910_AddedImages")]
-    partial class AddedImages
+    [Migration("20161219183838_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,11 +55,11 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("OnlineShowcase.Data.Model.Image", b =>
+            modelBuilder.Entity("OnlineShowcase.Data.Model.File", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("ImageId")
+                        .HasColumnName("FileId")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
@@ -76,11 +76,11 @@ namespace OnlineShowcase.Data.EF.Migrations
                         .IsRequired();
 
                     b.HasKey("Id")
-                        .HasName("ImageId");
+                        .HasName("FileId");
 
                     b.HasIndex("Path");
 
-                    b.ToTable("Images");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("OnlineShowcase.Data.Model.Product", b =>
