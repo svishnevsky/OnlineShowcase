@@ -689,6 +689,10 @@ span.dolor-left-grid {
     margin: 3em 0;
 }
 
+.single_top .grid-product {
+    padding-top: 0;
+}
+
 .toogle {
     margin-top: 4%;
 }
@@ -894,6 +898,22 @@ p.m_text {
     margin-bottom: 10px;
 }
 
+.product-grid.upload-files {
+    border: 3px dashed;
+    padding: 0;
+}
+
+.product-grid.upload-files .dropzone {
+    width: 100%;
+    padding: 10px;
+    min-height: 275px;
+}
+
+.product-grid.upload-files.av-block-ui {
+    width: 33.333%;
+    min-height: 326px;
+}
+
 .content_box h4 {
     text-align: center;
 }
@@ -905,7 +925,7 @@ p.m_text {
 .product-grid {
     float: left;
     width: 33.333%;
-    height: 326px;
+    min-height: 326px;
     display: block;
 }
 
@@ -921,6 +941,10 @@ p.m_text {
         top: 209px;
         left: 163px;
     }
+
+.grid-view-left {
+    padding: 0;
+}
 
 .grid-view-left img {
     -webkit-transition: all 0.3s ease-in-out;

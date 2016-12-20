@@ -27,7 +27,7 @@ class HttpClientClass {
                 });
             };
 
-            for(let name in  request.headers){
+            for(let name in request.headers){
                 xhr.setRequestHeader(name, request.headers[name]);
             }
             
@@ -35,13 +35,13 @@ class HttpClientClass {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + UserStore.getJwt());
             }
             
-            xhr.send(request.data ? JSON.stringify(request.data) : null);
+            xhr.send(!request.data ? null : request.headers['Content-Type'] === 'application/json' ? JSON.stringify(request.data) : request.data);
         });
     }
 }
 
 export class Request {
-    constructor(method, path, data = null, requiresAuth = false) {
+    constructor(method, path, data = null, requiresAuth = false, contentType = 'application/json') {
         this._setData = this._setData.bind(this);
         this.setHeader = this.setHeader.bind(this);
 
@@ -50,8 +50,11 @@ export class Request {
         this._setData(data);
         this.requiresAuth = requiresAuth;
         this.headers = {
-            "Content-Type" : "application/json; charset=UTF-8",
-            "Accept" : "application/json"
+            'Accept' : 'application/json'
+        }
+
+        if (contentType) {
+            this.setHeader('Content-Type', contentType);
         }
     }
 

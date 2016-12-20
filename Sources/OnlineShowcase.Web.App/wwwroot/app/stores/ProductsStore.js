@@ -13,7 +13,7 @@ const productsRepository = new ProductsRepository();
 const state = {
     filter: {
         skip: 0,
-        take: 3,
+        take: 20,
         sort: 'popular'
     },
     availableSorts: {

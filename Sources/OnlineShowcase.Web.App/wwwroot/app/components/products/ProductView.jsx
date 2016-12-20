@@ -2,9 +2,12 @@
 import ProductActions from '../../actions/ProductActions'
 import ProductsStore from '../../stores/ProductsStore'
 import CategoriesStore from '../../stores/CategoriesStore'
+import FileActions from '../../actions/FileActions'
+import FilesStore from '../../stores/FilesStore'
 import { browserHistory, Link } from 'react-router'
 import BlockUi from 'react-block-ui'
 import Validation from 'react-validation';
+import Dropzone from 'react-dropzone'
 
 function getSaved(){
     return ProductsStore.getSaved();
@@ -18,6 +21,7 @@ export default class ProductView extends Component {
         this.selectCategoryChanged = this.selectCategoryChanged.bind(this);
         this.removeCategory = this.removeCategory.bind(this);
         this.addCategory = this.addCategory.bind(this);
+        this.onDrop = this.onDrop.bind(this);
         this._getState = this._getState.bind(this);
         this._onSaved = this._onSaved.bind(this);
         this._onGot = this._onGot.bind(this);
@@ -45,6 +49,7 @@ export default class ProductView extends Component {
         ProductsStore.addSavedListener(this._onSaved);
         ProductsStore.addGotListener(this._onGot);
         CategoriesStore.addAllLoadedListener(this._onGot);
+        FilesStore.addUploadedListener(this._onUploaded);
 
         if (this.props.params.productId){
             ProductActions.get(this.props.params.productId);
@@ -69,7 +74,7 @@ export default class ProductView extends Component {
             return;
         }
 
-        var category = this.state.notAddedCategories.find(c => c.id == this.state.selectedCategoryId);
+        const category = this.state.notAddedCategories.find(c => c.id == this.state.selectedCategoryId);
 
         const state = this.state;
         this.state.notAddedCategories.splice(this.state.notAddedCategories.indexOf(category), 1);
@@ -91,6 +96,18 @@ export default class ProductView extends Component {
         const state = this.state;
         this.state.selectedCategoryId = id;
         this.setState(state);
+    }
+
+    onDrop(acceptedFiles) {
+        if (!acceptedFiles || acceptedFiles.length === 0) {
+            return;
+        }
+        
+        const state = this.state;
+        state.imagesLoading = true;
+        this.setState(state);
+
+        FileActions.upload(this.props.location.pathname, acceptedFiles);
     }
 
     render() {
@@ -131,6 +148,40 @@ export default class ProductView extends Component {
                                 </div>
                             </div>
                         <div className='clearfix'> </div>
+                        </div>
+
+                        <div className='grid-product'>
+                            <BlockUi tag='div' blocking={this.state.imagesLoading} className='product-grid upload-files'>
+                                <Dropzone accept='image/*' className='dropzone' onDrop={this.onDrop}>
+                                    <div>Try dropping some files here, or click to select files to upload.</div>
+                                </Dropzone>
+                            </BlockUi>
+
+                            <div className='product-grid grid-view-left'>
+                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            </div>
+                            
+                            <div className='product-grid grid-view-left'>
+                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            </div>
+                            
+                            <div className='product-grid grid-view-left'>
+                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            </div>
+                            
+                            <div className='product-grid grid-view-left'>
+                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            </div>
+                            
+                            <div className='product-grid grid-view-left'>
+                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            </div>
+                            
+                            <div className='product-grid grid-view-left'>
+                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                            </div>
+
+                            <div className='clearfix'> </div>
                         </div>
 
                         <div className='toogle'>
@@ -199,4 +250,7 @@ _onSaved(){
 _onGot() {
     this.setState(this._getState());
                                     }
+
+    _onUploaded() {
+    }
                                     }
