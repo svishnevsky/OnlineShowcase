@@ -8,7 +8,7 @@ using OnlineShowcase.Data.EF;
 namespace OnlineShowcase.Data.EF.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20161219183838_Initial")]
+    [Migration("20161220202814_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,9 @@ namespace OnlineShowcase.Data.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getutcdate()");
 
+                    b.Property<string>("MediaType")
+                        .IsRequired();
+
                     b.Property<string>("Name")
                         .IsRequired();
 
@@ -78,7 +81,8 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.HasKey("Id")
                         .HasName("FileId");
 
-                    b.HasIndex("Path");
+                    b.HasIndex("Path", "Name")
+                        .IsUnique();
 
                     b.ToTable("Files");
                 });

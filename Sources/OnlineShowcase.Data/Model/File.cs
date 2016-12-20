@@ -7,5 +7,7 @@
         public string Name { get; set; }
 
         public string Reference { get; set; }
+
+        public string MediaType { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace OnlineShowcase.Data.EF.Configuration
             base.Builder.Property(p => p.Path).IsRequired();
             base.Builder.Property(p => p.Name).IsRequired();
             base.Builder.Property(p => p.Reference).IsRequired();
+            base.Builder.Property(p => p.MediaType).IsRequired();
 
             base.Builder.HasIndex(p => new { p.Path, p.Name }).IsUnique();
         }

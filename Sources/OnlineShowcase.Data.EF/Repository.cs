@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Data.SqlClient;
+
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+
 using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
@@ -72,41 +75,21 @@ namespace OnlineShowcase.Data.EF
         }
 
         // ReSharper disable once InconsistentNaming
-        protected async Task<int> ExecSP(string name, params SqlParameter[] parameters)
+        protected void ExecSP(string name, params SqlParameter[] parameters)
         {
-            var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));
-            return await this.Context.Database.ExecuteSqlCommandAsync($"{name} {paramNames}", parameters: parameters);
-        }
-
-        // ReSharper disable once InconsistentNaming
-        protected async Task<T> ExecSP<T>(string name, Func<DbDataReader, T> reader = null, params SqlParameter[] parameters)
-        {
-            using (var command = this.Context.Database.GetDbConnection().CreateCommand())
+            lock (this.Context)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = name;
-                command.Parameters.AddRange(parameters);
-
-                command.Connection.Open();
-
-                T result;
-
-                if (reader == null)
+                using (var command = this.Context.Database.GetDbConnection()
+                    .CreateCommand())
                 {
-                    await command.ExecuteNonQueryAsync();
-                    result = default(T);
-                }
-                else
-                {
-                    using (var dbReader = await command.ExecuteReaderAsync())
-                    {
-                        result = reader(dbReader);
-                    }
-                }
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = name;
+                    command.Parameters.AddRange(parameters);
 
-                command.Connection.Close();
-
-                return result;
+                    command.Connection.Open();
+                    command.ExecuteNonQuery();
+                    command.Connection.Close();
+                }
             }
         }
 

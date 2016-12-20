@@ -37,6 +37,7 @@ namespace OnlineShowcase.Data.EF.Migrations
                     FileId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Created = table.Column<DateTime>(nullable: false, defaultValueSql: "getutcdate()"),
+                    MediaType = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Path = table.Column<string>(nullable: false),
                     Reference = table.Column<string>(nullable: false)
@@ -98,13 +99,14 @@ namespace OnlineShowcase.Data.EF.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Files_Path",
+                name: "IX_Files_Path_Name",
                 table: "Files",
-                column: "Path");
-            
+                columns: new[] { "Path", "Name" },
+                unique: true);
+
             migrationBuilder.Sql("CREATE PROCEDURE [dbo].[IncrementProductViews] @ProductId int, @Increment int AS BEGIN SET NOCOUNT ON; UPDATE Products SET ViewCount = (ViewCount + @Increment) WHERE ProductId = @ProductId; END;");
 
-            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[AddFile] @Path nvarchar(1000), @Name nvarchar(50), @Reference nvarchar(1000), @FileId int OUTPUT AS BEGIN SET NOCOUNT ON; MERGE Files AS t USING (SELECT @Path, @Name) AS s (Path, Name) ON (t.Path = s.Path AND t.Name = s.Name) WHEN NOT MATCHED THEN INSERT (Path, Name, Reference) VALUES (@Path, @Name, @Reference); IF (@@ROWCOUNT = 1) SET @FileId = SCOPE_IDENTITY(); ELSE SELECT @FileId = FileId FROM Files f WITH (NOLOCK) WHERE f.Path = @Path AND f.Name = @Name; END;");
+            migrationBuilder.Sql("CREATE PROCEDURE [dbo].[AddFile] @Path nvarchar(1000), @Name varchar(50), @Reference nvarchar(1000), @MediaType varchar(100), @FileId int OUTPUT AS BEGIN SET NOCOUNT ON; MERGE Files AS t USING (SELECT @Path, @Name) AS s (Path, Name) ON (t.Path = s.Path AND t.Name = s.Name) WHEN NOT MATCHED THEN INSERT (Path, Name, Reference, MediaType) VALUES (@Path, @Name, @Reference, @MediaType); IF (@@ROWCOUNT = 1) SET @FileId = SCOPE_IDENTITY(); ELSE SELECT @FileId = FileId FROM Files f WITH (NOLOCK) WHERE f.Path = @Path AND f.Name = @Name; END;");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

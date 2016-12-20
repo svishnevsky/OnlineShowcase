@@ -65,6 +65,9 @@ namespace OnlineShowcase.Data.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getutcdate()");
 
+                    b.Property<string>("MediaType")
+                        .IsRequired();
+
                     b.Property<string>("Name")
                         .IsRequired();
 
@@ -77,7 +80,8 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.HasKey("Id")
                         .HasName("FileId");
 
-                    b.HasIndex("Path");
+                    b.HasIndex("Path", "Name")
+                        .IsUnique();
 
                     b.ToTable("Files");
                 });

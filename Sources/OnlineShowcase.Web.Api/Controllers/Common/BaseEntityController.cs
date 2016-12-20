@@ -6,7 +6,7 @@ using OnlineShowcase.Core;
 namespace OnlineShowcase.Web.Api.Controllers.Common
 {
     [Authorize(Roles = "Contant Manager, Admin")]
-    public abstract class BaseEntityController<TViewModel, TDomainModel> : Controller
+    public abstract class BaseEntityController<TDomainModel> : Controller
     {
         protected readonly ISafeManager<TDomainModel> SafeManager;
         protected readonly IUnsafeManager<TDomainModel> UnsafeManager;

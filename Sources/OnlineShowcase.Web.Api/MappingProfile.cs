@@ -24,6 +24,9 @@ namespace OnlineShowcase.Web.Api
             CreateMap<Product, Core.Model.Product>();
             CreateMap<Core.Model.Product, Product>();
 
+            CreateMap<Core.Model.File, int>()
+                .ConstructUsing(f => f.Id);
+
             CreateMap<Core.Model.File, Data.Model.File>();
             CreateMap<Data.Model.File, Core.Model.File>();
 
@@ -43,6 +46,15 @@ namespace OnlineShowcase.Web.Api
                 .As<Data.EF.Filtering.CategoryFilter>();
             
             CreateMap<Core.Filtering.FileFilter, IFilter<Data.Model.File>>()
+                .ConstructUsing(
+                    ctor => new Data.EF.Filtering.FileFilter
+                    {
+                        Skip = ctor.Skip,
+                        Take = ctor.Take,
+                        SortBy = ctor.SortBy,
+                        SortAsc = ctor.SortAsc,
+                        Path = ctor.Path
+                    })
                 .As<Data.EF.Filtering.FileFilter>();
 
             CreateMap<Filter, Core.Filtering.Filter>();
@@ -55,6 +67,9 @@ namespace OnlineShowcase.Web.Api
                                  : f.PropertyFilters["categories"].Trim('[', ']')
                                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                        .Select(int.Parse)));
+
+            CreateMap<Filter, Core.Filtering.FileFilter>()
+                .ForMember(d => d.Path, s => s.MapFrom(f => !f.PropertyFilters.ContainsKey("path") ? null : f.PropertyFilters["path"]));
         }
     }
 }
