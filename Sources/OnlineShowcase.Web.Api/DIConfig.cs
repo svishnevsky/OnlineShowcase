@@ -7,12 +7,12 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OnlineShowcase.Core;
 using OnlineShowcase.Core.Services;
 using OnlineShowcase.Data.EF;
 using OnlineShowcase.Core.Reactive.Events;
 using OnlineShowcase.Core.Reactive.Subscribers;
 using OnlineShowcase.Core.Reactive;
-using OnlineShowcase.Web.Api.Services;
 
 namespace OnlineShowcase.Web.Api
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 using AutoMapper;
@@ -23,6 +24,10 @@ namespace OnlineShowcase.Web.Api
 
             CreateMap<Product, Core.Model.Product>();
             CreateMap<Core.Model.Product, Product>();
+
+            CreateMap<Core.Model.FileInfo, Core.Model.File>()
+                .ForMember(d => d.Reference, s => s.MapFrom(fi => Path.Combine(fi.Path, fi.Name)))
+                .ForMember(d => d.Path, s => s.Ignore());
 
             CreateMap<Core.Model.File, int>()
                 .ConstructUsing(f => f.Id);

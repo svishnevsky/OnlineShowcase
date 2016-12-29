@@ -6,19 +6,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShowcase.Web.Api.Controllers.Common;
-using OnlineShowcase.Web.Api.Services;
 using OnlineShowcase.Core;
 
 namespace OnlineShowcase.Web.Api.Controllers
 {
     public class FilesController : EntitiesController<IFormFileCollection, int, Core.Model.File, Core.Filtering.FileFilter>
     {
-        private readonly IFileProcessor fileProcessor;
-
-        public FilesController(ISafeManager<Core.Model.File> safeManager, IUnsafeManager<Core.Model.File> unsafeManager, IMapper mapper, IFileProcessor fileProcessor, string entityRouteName = null)
+        public FilesController(ISafeManager<Core.Model.File> safeManager, IUnsafeManager<Core.Model.File> unsafeManager, IMapper mapper, string entityRouteName = null)
             : base(safeManager, unsafeManager, mapper, entityRouteName)
         {
-            this.fileProcessor = fileProcessor;
         }
         
         public override async Task<ActionResult> Post([FromForm]IFormFileCollection files)
@@ -32,14 +28,15 @@ namespace OnlineShowcase.Web.Api.Controllers
 
         private async Task<int> ProcessFile(IFormFile file)
         {
-            var fileInfo = await this.fileProcessor.Process(file);
-            return await this.UnsafeManager.Add(new Core.Model.File
+            using (var fileModel = new Core.Model.File
+                                  {
+                                      Path = (string)this.RouteData.Values["path"] ?? "/",
+                                      MediaType = file.ContentType,
+                                      FileStream = file.OpenReadStream()
+                                  })
             {
-                Name = fileInfo.Name,
-                Reference = Path.Combine(fileInfo.Path, fileInfo.Name),
-                Path = (string)this.RouteData.Values["path"] ?? "/",
-                MediaType = file.ContentType
-            });
+                return await this.UnsafeManager.Add(fileModel);
+            }
         }
     }
 }

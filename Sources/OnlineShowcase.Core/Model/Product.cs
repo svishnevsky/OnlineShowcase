@@ -12,6 +12,8 @@ namespace OnlineShowcase.Core.Model
 
         public int ViewCount { get; set; }
 
+        public int? ImageId { get; set; }
+
         public IEnumerable<Category> Categories { get; set; }
     }
 }

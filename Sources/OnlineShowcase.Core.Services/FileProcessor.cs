@@ -2,10 +2,8 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using FileInfo = OnlineShowcase.Web.Api.Model.FileInfo;
 
-namespace OnlineShowcase.Web.Api.Services
+namespace OnlineShowcase.Core.Services
 {
     public class FileProcessor : IFileProcessor
     {
@@ -16,13 +14,14 @@ namespace OnlineShowcase.Web.Api.Services
             this.uploadFolder = uploadFolder;
         }
 
-        public async Task<FileInfo> Process(IFormFile file)
+        public async Task<Model.FileInfo> Process(Stream stream)
         {
             string hash;
 
             using (var md5 = MD5.Create())
             {
-                hash = BitConverter.ToString(md5.ComputeHash(file.OpenReadStream())).Replace("-", "");
+
+                hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
             }
 
             var filePath = Path.Combine(this.uploadFolder, hash);
@@ -31,11 +30,12 @@ namespace OnlineShowcase.Web.Api.Services
             {
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(fileStream);
+                    stream.Position = 0;
+                    await stream.CopyToAsync(fileStream);
                 }
             }
 
-            return new FileInfo
+            return new Model.FileInfo
             {
                 Name = hash,
                 Path = this.uploadFolder
