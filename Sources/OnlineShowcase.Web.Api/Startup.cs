@@ -72,11 +72,8 @@ namespace OnlineShowcase.Web.Api
             app.UseJwtBearerAuthentication(options);
 
             app.UseCors("AllowAnyOrigin");
-
-            app.UseMvc(routes =>
-            {
-                RoutingConfig.Register(routes);
-            });
+            
+            app.UseMvc(RoutingConfig.Register);
         }
     }
 }

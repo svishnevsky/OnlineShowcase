@@ -9,12 +9,12 @@ namespace OnlineShowcase.Data.EF
     public class DataContext : DbContext
     {
         private static readonly object LockObj = new object();
-
+        
         public DataContext(DbContextOptions options) : base(options)
         {
             base.ChangeTracker.AutoDetectChangesEnabled = false;
             base.Database.AutoTransactionsEnabled = true;
-
+            
             lock (LockObj)
             {
                 if (base.Database.GetPendingMigrations().Any())

@@ -14,7 +14,7 @@ namespace OnlineShowcase.Web.Api
             var entitiesControllerTypes = Assembly.GetEntryAssembly().GetTypes()
                 .Where(t => !t.GetTypeInfo().IsAbstract
                 && t.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType
-                && t.GetTypeInfo().BaseType.GetTypeInfo().GetGenericTypeDefinition() == typeof(EntitiesController<,,>));
+                && t.GetTypeInfo().BaseType.GetTypeInfo().GetGenericTypeDefinition() == typeof(EntitiesController<,,,>));
 
             foreach (var type in entitiesControllerTypes)
             {
@@ -32,6 +32,8 @@ namespace OnlineShowcase.Web.Api
                 var name = type.Name.Replace("Controller", string.Empty);
                 builder.MapWebApiRoute(name, $"{name.ToLower().Pluralize()}/{{id:int}}", defaults: new { controller = name, action = "Index" });
             }
+
+            builder.MapWebApiRoute("FilesByPath", "files/{*path}", defaults: new {controller = "Files", action = "Index"});
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Routing;
+
 using OnlineShowcase.Web.Api.Model;
 
 namespace OnlineShowcase.Web.Api.ModelBinders
@@ -53,6 +55,11 @@ namespace OnlineShowcase.Web.Api.ModelBinders
                 foreach (var key in query.Keys.Where(k => !ReservedKeys.Contains(k)))
                 {
                     filter.PropertyFilters.Add(key, query[key].ToString());
+                }
+
+                foreach (var routeParam in bindingContext.HttpContext.GetRouteData().Values)
+                {
+                    filter.PropertyFilters.Add(routeParam.Key, routeParam.Value.ToString());
                 }
 
                 bindingContext.Result = ModelBindingResult.Success(filter);

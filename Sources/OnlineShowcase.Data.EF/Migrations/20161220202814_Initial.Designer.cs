@@ -8,7 +8,7 @@ using OnlineShowcase.Data.EF;
 namespace OnlineShowcase.Data.EF.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20161204102222_Initial")]
+    [Migration("20161220202814_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,22 +37,54 @@ namespace OnlineShowcase.Data.EF.Migrations
                         .HasColumnName("CategoryId")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getutcdate()");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
 
                     b.Property<int?>("ParentId");
 
-                    b.Property<int?>("ProductId");
-
                     b.HasKey("Id")
                         .HasName("CategoryId");
 
                     b.HasIndex("ParentId");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("OnlineShowcase.Data.Model.File", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("FileId")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<string>("MediaType")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("Path")
+                        .IsRequired();
+
+                    b.Property<string>("Reference")
+                        .IsRequired();
+
+                    b.HasKey("Id")
+                        .HasName("FileId");
+
+                    b.HasIndex("Path", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("OnlineShowcase.Data.Model.Product", b =>
@@ -62,9 +94,15 @@ namespace OnlineShowcase.Data.EF.Migrations
                         .HasColumnName("ProductId")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getutcdate()");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(4000);
+
+                    b.Property<int?>("ImageId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -98,10 +136,6 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.HasOne("OnlineShowcase.Data.Model.Category")
                         .WithMany()
                         .HasForeignKey("ParentId");
-
-                    b.HasOne("OnlineShowcase.Data.Model.Product")
-                        .WithMany("Categories")
-                        .HasForeignKey("ProductId");
                 });
         }
     }

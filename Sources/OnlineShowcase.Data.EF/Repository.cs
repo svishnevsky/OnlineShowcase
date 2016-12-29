@@ -1,10 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using OnlineShowcase.Data.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Data.SqlClient;
+
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+
 using OnlineShowcase.Data.Filtering;
 
 namespace OnlineShowcase.Data.EF
@@ -33,7 +39,7 @@ namespace OnlineShowcase.Data.EF
         public virtual async Task<int> Add(TEntity entity)
         {
             var entry = this.Context.Set<TEntity>().Add(entity).Entity;
-            await this.Context.SaveChangesAsync();
+            await this.SaveChanges();
 
             return entry.Id;
         }
@@ -43,7 +49,7 @@ namespace OnlineShowcase.Data.EF
             var entry = this.Attach(entity);
             entry.Property("Created").IsModified = false;
 
-            return await this.Context.SaveChangesAsync();
+            return await this.SaveChanges();
         }
 
         public virtual async Task<int> Delete(int id)
@@ -57,7 +63,7 @@ namespace OnlineShowcase.Data.EF
 
             this.Context.Set<TEntity>().Remove(entity);
 
-            return await this.Context.SaveChangesAsync();
+            return await this.SaveChanges();
         }
 
         protected virtual EntityEntry<TEntity> Attach(TEntity entity)
@@ -69,10 +75,27 @@ namespace OnlineShowcase.Data.EF
         }
 
         // ReSharper disable once InconsistentNaming
-        protected async Task<int> ExecSP(string name, params SqlParameter[] parameters)
+        protected void ExecSP(string name, params SqlParameter[] parameters)
         {
-            var paramNames = string.Join(", ", parameters.Select(p => p.ParameterName));
-            return await this.Context.Database.ExecuteSqlCommandAsync($"{name} {paramNames}", parameters: parameters);
+            lock (this.Context)
+            {
+                using (var command = this.Context.Database.GetDbConnection()
+                    .CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = name;
+                    command.Parameters.AddRange(parameters);
+
+                    command.Connection.Open();
+                    command.ExecuteNonQuery();
+                    command.Connection.Close();
+                }
+            }
+        }
+
+        protected async Task<int> SaveChanges()
+        {
+            return await this.Context.SaveChangesAsync();
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineShowcase.Web.Api.Controllers.Common
 {
-    public class EntityController<TViewModel, TDomainModel> : BaseEntityController<TViewModel, TDomainModel>
+    public class EntityController<TViewModel, TDomainModel> : BaseEntityController<TDomainModel>
     {
         public EntityController(ISafeManager<TDomainModel> safeManager, IUnsafeManager<TDomainModel> unsafeManager, IMapper mapper)
             : base(safeManager, unsafeManager, mapper)
@@ -30,7 +30,7 @@ namespace OnlineShowcase.Web.Api.Controllers.Common
         {
             await this.UnsafeManager.Update(this.Mapper.Map<TDomainModel>(model));
 
-            return NoContent();
+            return this.NoContent();
         }
 
         [HttpDelete]

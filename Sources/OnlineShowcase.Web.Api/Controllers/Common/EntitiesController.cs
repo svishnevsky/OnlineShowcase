@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -8,13 +7,13 @@ using OnlineShowcase.Core;
 using OnlineShowcase.Web.Api.Validation;
 using Humanizer;
 using OnlineShowcase.Web.Api.Model;
-using System.Linq;
 using OnlineShowcase.Web.Api.ModelBinders;
+using System.Linq;
 
 namespace OnlineShowcase.Web.Api.Controllers.Common
 {
-    public abstract class EntitiesController<TViewModel, TDomainModel, TFilter>
-        : BaseEntityController<TViewModel, TDomainModel> where TFilter : Core.Filtering.Filter
+    public abstract class EntitiesController<TPostModel, TListModel, TDomainModel, TFilter>
+        : BaseEntityController<TDomainModel> where TFilter : Core.Filtering.Filter
     {
         private readonly string entityRouteName;
 
@@ -40,13 +39,13 @@ namespace OnlineShowcase.Web.Api.Controllers.Common
                 return this.BadRequest(new { ex.Message });
             }
 
-            return this.Ok((await this.SafeManager.Get(domainFilter)).Select(item => this.Mapper.Map<TViewModel>(item)));
+            return this.Ok((await this.SafeManager.Get(domainFilter)).Select(item => this.Mapper.Map<TListModel>(item)));
         }
 
         [HttpPost]
         [ModelValidation]
         [ActionName("Index")]
-        public virtual async Task<ActionResult> Post([FromBody]TViewModel model)
+        public virtual async Task<ActionResult> Post([FromBody]TPostModel model)
         {
             var id = await this.UnsafeManager.Add(this.Mapper.Map<TDomainModel>(model));
 

@@ -84,7 +84,7 @@ namespace OnlineShowcase.Data.EF
 
         public async Task IncrementViewsCount(int productId, int increment)
         {
-            await base.ExecSP("IncrementProductViews", new SqlParameter("@ProductId", productId), new SqlParameter("@Increment", increment));
+            await Task.Factory.StartNew(() => base.ExecSP("IncrementProductViews", new SqlParameter("@ProductId", productId), new SqlParameter("@Increment", increment)));
         }
 
         protected override EntityEntry<Product> Attach(Product entity)

@@ -54,6 +54,38 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("OnlineShowcase.Data.Model.File", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("FileId")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<string>("MediaType")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("Path")
+                        .IsRequired();
+
+                    b.Property<string>("Reference")
+                        .IsRequired();
+
+                    b.HasKey("Id")
+                        .HasName("FileId");
+
+                    b.HasIndex("Path", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("OnlineShowcase.Data.Model.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -68,6 +100,8 @@ namespace OnlineShowcase.Data.EF.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(4000);
+
+                    b.Property<int?>("ImageId");
 
                     b.Property<string>("Name")
                         .IsRequired()

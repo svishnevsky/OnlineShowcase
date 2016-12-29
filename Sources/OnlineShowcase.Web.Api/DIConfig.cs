@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OnlineShowcase.Core;
 using OnlineShowcase.Core.Services;
 using OnlineShowcase.Data.EF;
 using OnlineShowcase.Core.Reactive.Events;
@@ -56,6 +57,11 @@ namespace OnlineShowcase.Web.Api
                 {
                     e.Instance.Subscribe(e.Context.Resolve<IObserver<ProductViewEvent>>());
                 })
+                .SingleInstance();
+
+            builder.RegisterType<FileProcessor>()
+                .WithParameter("uploadFolder", configuration["AppSettings:UploadFolder"])
+                .As<IFileProcessor>()
                 .SingleInstance();
 
             builder.Populate(services);
