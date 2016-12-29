@@ -8,10 +8,7 @@ import { browserHistory, Link } from 'react-router'
 import BlockUi from 'react-block-ui'
 import Validation from 'react-validation';
 import Dropzone from 'react-dropzone'
-
-function getSaved(){
-    return ProductsStore.getSaved();
-}
+import UrlBuilder from '../../utils/UrlBuilder'
 
 export default class ProductView extends Component {
     constructor() {
@@ -21,10 +18,14 @@ export default class ProductView extends Component {
         this.selectCategoryChanged = this.selectCategoryChanged.bind(this);
         this.removeCategory = this.removeCategory.bind(this);
         this.addCategory = this.addCategory.bind(this);
+        this.removeImage = this.removeImage.bind(this);
+        this.setAsPrimaryImage = this.setAsPrimaryImage.bind(this);
         this.onDrop = this.onDrop.bind(this);
-        this._getState = this._getState.bind(this);
-        this._onSaved = this._onSaved.bind(this);
-        this._onGot = this._onGot.bind(this);
+        this.updateState = this.updateState.bind(this);
+        this.onSaved = this.onSaved.bind(this);
+        this.onFilesUploaded = this.onFilesUploaded.bind(this);
+
+        this.state = {}
     }
 
     save() {
@@ -35,7 +36,8 @@ export default class ProductView extends Component {
             id: this.state.id,
             name: this.form.components.name.state.value,
             description: this.form.components.description.state.value,
-            categories: this.state.categories
+            categories: this.state.categories,
+            imageId: this.state.imageId
         });
     }
 
@@ -44,22 +46,27 @@ export default class ProductView extends Component {
     }
 
     componentWillMount() {
-        this.state = this._getState();
+        this.updateState();
 
-        ProductsStore.addSavedListener(this._onSaved);
-        ProductsStore.addGotListener(this._onGot);
-        CategoriesStore.addAllLoadedListener(this._onGot);
-        FilesStore.addUploadedListener(this._onUploaded);
+        ProductsStore.addSavedListener(this.onSaved);
+        ProductsStore.addGotListener(this.updateState);
+        CategoriesStore.addAllLoadedListener(this.updateState);
+        FilesStore.addLoadedListener(this.updateState);
+        FilesStore.addUploadedListener(this.onFilesUploaded);
 
         if (this.props.params.productId){
             ProductActions.get(this.props.params.productId);
+
+            FileActions.get(this.props.location.pathname);
         }
     }
 
     componentWillUnmount() {
-        ProductsStore.removeSavedListener(this._onSaved);
-        ProductsStore.removeGotListener(this._onGot);
-        CategoriesStore.removeAllLoadedListener(this._onGot);
+        ProductsStore.removeSavedListener(this.onSaved);
+        ProductsStore.removeGotListener(this.updateState);
+        CategoriesStore.removeAllLoadedListener(this.updateState);
+        FilesStore.removeLoadedListener(this.updateState);
+        FilesStore.removeUploadedListener(this.onFilesUploaded);
     }
 
     handleSubmit(event){
@@ -85,8 +92,35 @@ export default class ProductView extends Component {
     removeCategory(category){
         const state = this.state;
 
-        this.state.categories.splice(this.state.categories.indexOf(category), 1);
-        this.state.notAddedCategories.push(category);
+        state.categories.splice(state.categories.indexOf(category), 1);
+        state.notAddedCategories.push(category);
+
+        this.setState(state);
+    }
+
+    removeImage(image){
+        const state = this.state;
+
+        if (state.imageId === image) {
+            state.imageId = null;
+        } else {
+            state.images.splice(state.images.indexOf(image), 1);
+        }
+
+        FileActions.delete(image);
+
+        this.setState(state);
+    }
+
+    setAsPrimaryImage(image){
+        const state = this.state;
+        state.images.splice(state.images.indexOf(image), 1);
+
+        if (state.imageId) {
+            state.images.push(state.imageId);
+        }
+
+        state.imageId = image;
 
         this.setState(state);
     }
@@ -102,7 +136,7 @@ export default class ProductView extends Component {
         if (!acceptedFiles || acceptedFiles.length === 0) {
             return;
         }
-        
+
         const state = this.state;
         state.imagesLoading = true;
         this.setState(state);
@@ -111,17 +145,18 @@ export default class ProductView extends Component {
     }
 
     render() {
-        const paragraphs = this.state.description.split(/\r?\n+/);
+        const paragraphs = this.state.description ? this.state.description.split(/\r?\n+/) : [];
 
         return (
                 <BlockUi tag='div' blocking={this.state.isLoading} className='single_top'>
                     <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
                         <div className='single_grid'>
-
+                            {!this.state.imageId ? null : 
                             <div className='grid images_3_of_2'>
-                                <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                                 <span className='icon delete edit-element' onClick={(event) => {event.preventDefault(); this.removeImage(this.state.imageId)}}></span>
+                                <img src={UrlBuilder.buildFileUrl(this.state.imageId)} alt=''/>
                                 <div className='clearfix'> </div>
-                            </div>
+                            </div>}
 
                             <div className='desc1 span_3_of_2'>
                                 <h4 className='view-element'>{this.state.name}</h4>
@@ -151,36 +186,19 @@ export default class ProductView extends Component {
                         </div>
 
                         <div className='grid-product'>
-                            <BlockUi tag='div' blocking={this.state.imagesLoading} className='product-grid upload-files'>
+                            <BlockUi tag='div' blocking={this.state.imagesLoading} className='product-grid upload-files edit-element'>
                                 <Dropzone accept='image/*' className='dropzone' onDrop={this.onDrop}>
                                     <div>Try dropping some files here, or click to select files to upload.</div>
                                 </Dropzone>
                             </BlockUi>
 
-                            <div className='product-grid grid-view-left'>
-                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                                    {!this.state.images ? null : this.state.images.map(img => {
+                    return <div className='product-grid grid-view-left product-image' key={img}>
+                                 <span className='icon delete edit-element' onClick={(event) => {event.preventDefault(); this.removeImage(img)}}></span>
+                                 <span className='edit-element set-primary' onClick={(event) => {event.preventDefault(); this.setAsPrimaryImage(img)}}>Set as primary</span>
+                                 <img src={UrlBuilder.buildFileUrl(img)} alt=''/>
                             </div>
-                            
-                            <div className='product-grid grid-view-left'>
-                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                            </div>
-                            
-                            <div className='product-grid grid-view-left'>
-                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                            </div>
-                            
-                            <div className='product-grid grid-view-left'>
-                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                            </div>
-                            
-                            <div className='product-grid grid-view-left'>
-                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                            </div>
-                            
-                            <div className='product-grid grid-view-left'>
-                                 <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
-                            </div>
-
+                                    })}
                             <div className='clearfix'> </div>
                         </div>
 
@@ -200,57 +218,73 @@ export default class ProductView extends Component {
                     </Validation.components.Form>
                 </BlockUi>
             );
-                                    }
+   }
 
-_getState() {
-    const product = !this.props.params.productId ? null : ProductsStore.getGot();
+    updateState() {
+        const state = this.state;
 
-    let notAddedCategories = null;
-    const categoryMap = CategoriesStore.getCategoryMap();
-    if (!this.props.params.productId){
-        notAddedCategories = categoryMap ? Object.keys(categoryMap).map(key => categoryMap[key]) : null;
-                                    } else if (product && product.categories && categoryMap){
-        notAddedCategories = new Array();
-        for (let id in categoryMap){
-            if (!product.categories.find(pc => { return id == pc.id; }))
-                                    {
-                notAddedCategories.push(categoryMap[id]);
-                                    }
-                                    }
-                                    }
+        const product = !this.props.params.productId ? null : ProductsStore.getGot();
 
-    return {
-                                        isLoading: this.props.params.productId && !product ? true : false,
-                                        id: this.props.params.productId,
-                                        name: product ? product.name : '',
-                                        description: product ? product.description : '',
-                                        viewCount: product ? product.viewCount : 0,
-                                        categories: product ? product.categories : [],
-                                        notAddedCategories: notAddedCategories
-                                    };
-                                    }
+        let notAddedCategories = null;
+        const categoryMap = CategoriesStore.getCategoryMap();
 
-_onSaved(){
-    const saved = getSaved();
-    const state = this.state;
-    state.isLoading = false;
-    this.setState(state);
+        if (!this.props.params.productId){
+            notAddedCategories = categoryMap ? Object.keys(categoryMap).map(key => categoryMap[key]) : null;
+        } else if (product && product.categories && categoryMap) {
+            notAddedCategories = new Array();
+            for (let id in categoryMap){
+                if (!product.categories.find(pc => { return id === pc.id; })) {
+                    notAddedCategories.push(categoryMap[id]);
+                }
+            }
+        }
 
-    if (saved.status == 400){
-        for(let name in saved.data){
-            this.form.showError(name, saved.data[name][0]);
-                                    }
-                                    }
+        state.imageId = product ? product.imageId : null;
 
-    if (saved.status == 200 || saved.status == 201 || saved.status == 204){
-        this.close();
-                                    }
-                                    }
+        const images = FilesStore.getFiles();
 
-_onGot() {
-    this.setState(this._getState());
-                                    }
+        if (state.imageId) {
+            const index = images.indexOf(state.imageId);
 
-    _onUploaded() {
+            if (index >= 0) {
+                images.splice(index, 1);
+            }
+        }
+
+        state.isLoading = this.props.params.productId && !product ? true : false;
+        state.id = this.props.params.productId;
+        state.name = product ? product.name : '';
+        state.description = product ? product.description : '';
+        state.viewCount = product ? product.viewCount : 0;
+        state.categories = product ? product.categories : [];
+        state.notAddedCategories = notAddedCategories;
+        state.images = images;
+
+        this.setState(state);
     }
-                                    }
+
+    onSaved(){
+        const saved = ProductsStore.getSaved();
+        const state = this.state;
+        state.isLoading = false;
+        this.setState(state);
+
+        if (saved.status == 400){
+            for(let name in saved.data) {
+                this.form.showError(name, saved.data[name][0]);
+            }
+        }
+
+        if (saved.status >= 200 && saved.status < 300) {
+            this.close();
+        }
+    }
+
+    onFilesUploaded() {
+        this.updateState();
+
+        const state = this.state;
+        state.imagesLoading = false;
+        this.setState(state);
+    }
+}

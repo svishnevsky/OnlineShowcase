@@ -3,9 +3,9 @@ import FileConstants from '../constants/FileConstants';
 import FilesRepository from '../repositories/FilesRepository';
 import { EventEmitter } from 'events';
 
-const UPLOADED_EVENT = 'files_uploaded';
 const DELETED_EVENT = 'file_deleted';
 const LOADED_EVENT = 'files_loaded';
+const UPLOADED_EVENT = 'files_uploaded';
 
 const filesRepository = new FilesRepository();
 
@@ -13,11 +13,10 @@ const state = {};
 
 function uploadFiles(path, files){
     return filesRepository.upload(path, files).then(response => {
-        state.uploaded = {
-            status: response.status,
-            data: response.data
-        };
-
+        state.files = state.files.concat(response.data).filter((value, index, self) => {
+            return self.indexOf(value) === index;
+        });
+        
         FilesStore.emitUploaded();
     });
 }
@@ -36,6 +35,7 @@ function getFiles(path){
 }
 
 class FilesStoreClass extends EventEmitter {
+    
     emitUploaded() {
         this.emit(UPLOADED_EVENT);
     }
@@ -72,12 +72,8 @@ class FilesStoreClass extends EventEmitter {
         this.removeListener(DELETED_EVENT, callback);
     }
 
-    getUploaded(){
-        return state.uploaded;
-    }
-
-    getLoaded() {
-        return state.files;
+    getFiles() {
+        return state.files ? state.files : [];
     }
 }
 

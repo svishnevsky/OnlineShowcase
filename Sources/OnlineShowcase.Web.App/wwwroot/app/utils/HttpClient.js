@@ -1,16 +1,16 @@
 ﻿import Promise from 'promise'
 import UserStore from '../stores/UserStore'
 import LogActions from '../actions/LogActions';
+import UrlBuilder from './UrlBuilder'
 
 class HttpClientClass {
-    constructor(host) {
-        this.host = host;
-
+    constructor() {
         this.send = this.send.bind(this);
     }
 
     send (request) {
-        const uri = this.host + request.path;
+        const uri = UrlBuilder.buildUrl(request.path, request.method === 'GET' ? request.data : null);
+
         return new Promise(function(resolve, reject){
             const xhr = new XMLHttpRequest();
             xhr.open(request.method, uri);
@@ -67,25 +67,10 @@ export class Request {
             return;
         }
 
-        if (this.method !== 'GET') {
-            this.data = data;
-            return;
-        }
-
-        let path = `${this.path}?`;
-
-        for (let key in data) {
-            if (!data[key]) {
-                continue;
-            }
-
-            path = `${path}${key}=${!Array.isArray(data[key]) ? data[key] : `[${data[key].join(',')}]`}&`;
-        }
-
-        this.path = path.slice(0, -1);
+        this.data = data;
     }
 }
 
-const HttpClient = new HttpClientClass('http://localhost:7438/');
+const HttpClient = new HttpClientClass();
 
 export default HttpClient;

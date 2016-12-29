@@ -6,6 +6,7 @@ import ProductActions from '../../actions/ProductActions'
 import ManageIcons from '../app/ManageIcons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import BlockUi from 'react-block-ui'
+import UrlBuilder from '../../utils/UrlBuilder'
 
 export default class ProductList extends Component {
     constructor() {
@@ -36,7 +37,7 @@ export default class ProductList extends Component {
         return (<div className='women-product'>
                     <div className=' w_content'>
             <div className='women'>
-                <h4>{!this.state.category ? null : this.state.category.name}<span>{!this.state.count ? null : `${this.state.count} items`}</span> </h4>
+                <h4>{!this.state.category ? null : this.state.category.name}</h4>
                 <ul className='w_nav'>
                     <li>Sort : </li>
     {this.props.sorts.map(s => {
@@ -90,7 +91,7 @@ _getState() {
                <div className='content_box'>
                   <Link to={`products/${product.id}`}>
                      <div className='left-grid-view grid-view-left'>
-                        <img src='images/pic2.jpg' className='img-responsive watch-right' alt=''/>
+                        <img src={UrlBuilder.buildFileUrl(product.imageId)} alt=''/>
                     </div>
                   </Link>
                   <h4>{product.name}</h4>
