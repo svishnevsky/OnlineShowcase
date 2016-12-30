@@ -3,6 +3,7 @@
 
   "dependencies": {
     "AutoMapper": "5.2.0",
+    "NETCore.MailKit": "1.0.1",
     "OnlineShowcase.Core": "1.0.0-*",
     "OnlineShowcase.Data": "1.0.0-*"
   },

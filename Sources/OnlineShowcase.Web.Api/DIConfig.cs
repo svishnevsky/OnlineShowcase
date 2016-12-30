@@ -8,11 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShowcase.Core;
+using OnlineShowcase.Core.Notifications;
 using OnlineShowcase.Core.Services;
 using OnlineShowcase.Data.EF;
 using OnlineShowcase.Core.Reactive.Events;
 using OnlineShowcase.Core.Reactive.Subscribers;
 using OnlineShowcase.Core.Reactive;
+using OnlineShowcase.Core.Services.Notifications;
 
 namespace OnlineShowcase.Web.Api
 {
@@ -49,6 +51,23 @@ namespace OnlineShowcase.Web.Api
 
             builder.RegisterType<ProductViewEventSubscriber>()
                 .As<IObserver<ProductViewEvent>>()
+                .SingleInstance();
+            
+            builder.RegisterType<ContactUsNotificationProcessor>()
+                .WithParameter("smtpSettings", new SmtpSettings
+                                                   {
+                                                       Host = configuration["Smtp:Host"],
+                                                       Port = int.Parse(configuration["Smtp:Port"]),
+                                                       From = configuration["Smtp:From"],
+                                                       FromEmail = configuration["Smtp:FromEmail"],
+                                                       UserName = configuration["Smtp:UserName"],
+                                                       Password = configuration["Smtp:Password"]
+                })
+                .As<INotificationProcessor>()
+                .SingleInstance();
+
+            builder.RegisterType<NotificationService>()
+                .As<INotificationService>()
                 .SingleInstance();
 
             builder.RegisterType<EventStream>()

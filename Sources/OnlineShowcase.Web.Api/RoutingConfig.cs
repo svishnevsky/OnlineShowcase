@@ -34,6 +34,8 @@ namespace OnlineShowcase.Web.Api
             }
 
             builder.MapWebApiRoute("FilesByPath", "files/{*path}", defaults: new {controller = "Files", action = "Index"});
+
+            builder.MapWebApiRoute("Notifications", "notifications/", defaults: new { controller = "Notifications", action = "Index" });
         }
     }
 }
