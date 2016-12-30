@@ -36,6 +36,10 @@ export default class Header extends Component {
                             <div className='logo'>
                                 <Link to='/'><img src='images/logo.png' alt='OnlineShowcase'/></Link>
                             </div>
+                            <div className='links'>
+                                <Link to='/aboutus'>About Us</Link>
+                                <Link to='/contactus'>Contact Us</Link>
+                            </div>
                             <div className='clearfix'> </div>
                         </div>
 

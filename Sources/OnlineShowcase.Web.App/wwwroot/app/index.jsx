@@ -3,6 +3,8 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router, hashHistory, Route, IndexRoute } from 'react-router'
 import App from './components/app/App.jsx'
+import AboutUs from './components/app/AboutUs.jsx'
+import ContactUs from './components/app/ContactUs.jsx'
 import Login from './components/auth/Login.jsx'
 import Logout from './components/auth/Logout.jsx'
 import CategoryEdit from './components/categories/CategoryEdit.jsx'
@@ -12,6 +14,7 @@ import ProductDelete from './components/products/ProductDelete.jsx'
 import ProductView from './components/products/ProductView.jsx'
 import AuthService from './utils/AuthService';
 import UserStore from './stores/UserStore';
+import './stores/NotificationsStore';
 import './utils/ValidationRules'
 import 'react-block-ui/style.css'
 import './utils/ModalStyles'
@@ -28,6 +31,8 @@ render((
     <Router history={hashHistory}>
         <Route path='/' component={App}>
             <IndexRoute component={ProductList} />
+            <Route path='aboutus' component={AboutUs} />
+            <Route path='contactus' component={ContactUs} />
             <Route path='login' component={Login} auth={auth} />
             <Route path='logout' component={Logout} />
             <Route path='access_token=:token' component={ProductList} />

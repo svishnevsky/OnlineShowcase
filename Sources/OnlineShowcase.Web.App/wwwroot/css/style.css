@@ -88,6 +88,20 @@ ul.support {
     width: 55%;
 }
 
+    .header-bottom-left .links {
+        text-align: center;
+    }
+
+        .header-bottom-left .links a {
+            display: inline-block;
+            margin: 1.7em 15px 0;
+            text-transform: uppercase;
+        }
+
+            .header-bottom-left .links a:hover {
+                text-decoration: none;
+            }
+
 .logo {
     float: left;
     width: 27%;
@@ -806,6 +820,11 @@ p.m_text {
     padding-left: 340px;
 }
 
+    .main p {
+        text-align: justify;
+        text-indent: 20px;
+    }
+
     .women-product .w_content {
         position: fixed;
         width: 800px;
@@ -1041,7 +1060,7 @@ p.m_text {
     font-size: 2em;
     color: #555;
     text-transform: uppercase;
-    margin: 1em 0;
+    margin: 1em 0 0;
 }
 
 .map {
@@ -1091,7 +1110,7 @@ p.m_text {
     resize: none;
 }
 
-.contact-form input[type="submit"] {
+.contact-form button {
     padding: 10px 25px;
     color: #fff;
     background: #F97E76;
@@ -1108,9 +1127,13 @@ p.m_text {
     float: right;
 }
 
-    .contact-form input[type="submit"]:hover {
+    .contact-form button:hover {
         background: #1DBAA5;
     }
+
+.contact-form form div {
+    padding: 0;
+}
 /*--login--*/
 .login-left {
     padding: 0;
