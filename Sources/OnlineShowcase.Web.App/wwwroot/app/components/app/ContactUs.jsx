@@ -13,9 +13,11 @@ export default class ContactUs extends Component
     handleSubmit(event) {
         event.preventDefault();
         NotificationsActions.add({
-            name: this.form.components.name.state.value,
-            email: this.form.components.email.state.value,
-            message: this.form.components.message.state.value,
+            payload: {
+                name: this.form.components.name.state.value,
+                email: this.form.components.email.state.value,
+                message: this.form.components.message.state.value
+            },
             type: 'contact-us'
         });
 
