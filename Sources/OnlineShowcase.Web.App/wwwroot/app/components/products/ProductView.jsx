@@ -10,6 +10,13 @@ import Validation from 'react-validation';
 import Dropzone from 'react-dropzone'
 import UrlBuilder from '../../utils/UrlBuilder'
 
+function getDefaultState() {
+    return {
+        pendingImages: [],
+        removingImages: []
+    };
+}
+
 export default class ProductView extends Component {
     constructor() {
         super();
@@ -24,14 +31,20 @@ export default class ProductView extends Component {
         this.updateState = this.updateState.bind(this);
         this.onSaved = this.onSaved.bind(this);
         this.onFilesUploaded = this.onFilesUploaded.bind(this);
+        this.removePendingImage = this.removePendingImage.bind(this);
 
-        this.state = {}
+        this.state = getDefaultState();
     }
 
     save() {
         const state = this.state;
         state.isLoading = true;
         this.setState(state);
+
+        for (let img of state.removingImages) {
+            FileActions.delete(img);
+        }
+        
         ProductActions.save({
             id: this.state.id,
             name: this.form.components.name.state.value,
@@ -46,7 +59,7 @@ export default class ProductView extends Component {
     }
 
     componentWillMount() {
-        this.updateState();
+        this.updateState(getDefaultState());
 
         ProductsStore.addSavedListener(this.onSaved);
         ProductsStore.addGotListener(this.updateState);
@@ -105,9 +118,20 @@ export default class ProductView extends Component {
             state.imageId = null;
         } else {
             state.images.splice(state.images.indexOf(image), 1);
+            state.removingImages.push(image);
         }
+        
+        this.setState(state);
+    }
 
-        FileActions.delete(image);
+    removePendingImage(image) {
+        const state = this.state;
+
+        if (state.image === image) {
+            state.image = null;
+        } else {
+            state.pendingImages.splice(state.pendingImages.indexOf(image), 1);
+        }
 
         this.setState(state);
     }
@@ -125,6 +149,19 @@ export default class ProductView extends Component {
         this.setState(state);
     }
 
+    setAsPrimaryPendingImage(image){
+        const state = this.state;
+        state.pendingImages.splice(state.images.indexOf(image), 1);
+
+        if (state.image) {
+            state.pendingImages.push(state.image);
+        }
+
+        state.image = image;
+
+        this.setState(state);
+    }
+
     selectCategoryChanged(event){
         const id = event.target.value;
         const state = this.state;
@@ -138,10 +175,11 @@ export default class ProductView extends Component {
         }
 
         const state = this.state;
-        state.imagesLoading = true;
-        this.setState(state);
+        state.pendingImages = state.pendingImages.concat(acceptedFiles.filter((value) => {
+            return !state.pendingImages.find(img => img.name === value.name && img.size === value.size);
+        }));
 
-        FileActions.upload(this.props.location.pathname, acceptedFiles);
+        this.setState(state);
     }
 
     render() {
@@ -157,6 +195,13 @@ export default class ProductView extends Component {
                                 <img src={UrlBuilder.buildFileUrl(this.state.imageId)} alt=''/>
                                 <div className='clearfix'> </div>
                             </div>}
+
+                             {!this.state.image ? null : 
+                             <div className='grid images_3_of_2'>
+                                 <span className='icon delete edit-element' onClick={(event) => {event.preventDefault(); this.removePendingImage(this.state.image)}}></span>
+                                 <img src={this.state.image.preview} alt=''/>
+                                 <div className='clearfix'> </div>
+                             </div>}
 
                             <div className='desc1 span_3_of_2'>
                                 <h4 className='view-element'>{this.state.name}</h4>
@@ -191,9 +236,16 @@ export default class ProductView extends Component {
                                     <div>Try dropping some files here, or click to select files to upload.</div>
                                 </Dropzone>
                             </BlockUi>
+                                        {!this.state.pendingImages ? null : this.state.pendingImages.map(img => {
+                                     return <div className='product-grid grid-view-left product-image' key={img.name}>
+                                 <span className='icon delete edit-element' onClick={(event) => {event.preventDefault(); this.removePendingImage(img)}}></span>
+                                 <span className='edit-element set-primary' onClick={(event) => {event.preventDefault(); this.setAsPrimaryPendingImage(img)}}>Set as primary</span>
+                                 <img src={img.preview} alt=''/>
+                            </div>
+                                    })}
 
                                     {!this.state.images ? null : this.state.images.map(img => {
-                    return <div className='product-grid grid-view-left product-image' key={img}>
+                                     return <div className='product-grid grid-view-left product-image' key={img}>
                                  <span className='icon delete edit-element' onClick={(event) => {event.preventDefault(); this.removeImage(img)}}></span>
                                  <span className='edit-element set-primary' onClick={(event) => {event.preventDefault(); this.setAsPrimaryImage(img)}}>Set as primary</span>
                                  <img src={UrlBuilder.buildFileUrl(img)} alt=''/>
@@ -220,8 +272,8 @@ export default class ProductView extends Component {
             );
    }
 
-    updateState() {
-        const state = this.state;
+    updateState(startState) {
+        const state = startState ? startState : this.state;
 
         const product = !this.props.params.productId ? null : ProductsStore.getGot();
 
@@ -266,25 +318,37 @@ export default class ProductView extends Component {
     onSaved(){
         const saved = ProductsStore.getSaved();
         const state = this.state;
-        state.isLoading = false;
-        this.setState(state);
 
         if (saved.status == 400){
+            state.isLoading = false;
             for(let name in saved.data) {
                 this.form.showError(name, saved.data[name][0]);
             }
         }
-
+        
         if (saved.status >= 200 && saved.status < 300) {
-            this.close();
+            console.log(state.pendingImages.length === 0);
+            if (state.pendingImages.length === 0) {
+                this.close();
+            } else {
+                let filesPath = this.props.location.pathname;
+                if (filesPath.endsWith('new')) {
+                    filesPath = filesPath.replace('new', saved.data.id);
+                }
+
+                FileActions.upload(filesPath, state.pendingImages);
+            }
         }
+
+        this.setState(state);
     }
 
     onFilesUploaded() {
         this.updateState();
 
         const state = this.state;
-        state.imagesLoading = false;
+        state.isLoading = false;
         this.setState(state);
+        this.close();
     }
 }

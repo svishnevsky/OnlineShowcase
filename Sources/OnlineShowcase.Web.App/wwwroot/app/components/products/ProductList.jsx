@@ -16,12 +16,14 @@ export default class ProductList extends Component {
         this._updateProps = this._updateProps.bind(this);
         this.loadMore = this.loadMore.bind(this);
 
-        this.state = this._getState();
+        this.state = {};
     }
 
     componentWillMount() {
         ProductsStore.addFoundListener(this._onFound);
         CategoriesStore.addAllLoadedListener(this._updateProps);
+
+        this.setState(this._getState());
     }
 
     componentWillReceiveProps(props) {
