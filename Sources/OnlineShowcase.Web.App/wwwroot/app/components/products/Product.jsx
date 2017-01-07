@@ -199,7 +199,12 @@ export default class Product extends Component {
 
         state.model.image = !state.model.image && product ? product.imageId : state.model.image;
 
-        const images = state.model.images.concat(FilesStore.getFiles().filter((value) => !state.model.images.find(img => typeof img === 'number' && img === value)));
+        let images = state.model.images;
+
+        if (this.props.params.productId) {
+            images = images.concat(FilesStore.getFiles().filter((value) => !images.find(img => typeof img === 'number' && img === value)));
+        }
+
         if (state.model.image) {
             const index = images.indexOf(state.model.image);
 
