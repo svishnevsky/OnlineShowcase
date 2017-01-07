@@ -3,53 +3,44 @@ import { Link } from 'react-router'
 import ProductsStore from '../../stores/ProductsStore'
 import CategoriesStore from '../../stores/CategoriesStore'
 import ProductActions from '../../actions/ProductActions'
-import ManageIcons from '../app/ManageIcons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import BlockUi from 'react-block-ui'
-import UrlBuilder from '../../utils/UrlBuilder'
+import ProductListHeaderView from './ProductListHeaderView'
+import ProductListItemView from './ProductListItemView'
 
 export default class ProductList extends Component {
     constructor() {
         super();
-        this._getState = this._getState.bind(this);
-        this._onFound = this._onFound.bind(this);
-        this._updateProps = this._updateProps.bind(this);
+        this.updateState = this.updateState.bind(this);
+        this.updateProps = this.updateProps.bind(this);
         this.loadMore = this.loadMore.bind(this);
 
-        this.state = {};
+        this.state = {
+            model: {
+                sorts: ProductsStore.getAvailableSorts()
+            }
+        };
     }
 
     componentWillMount() {
-        ProductsStore.addFoundListener(this._onFound);
-        CategoriesStore.addAllLoadedListener(this._updateProps);
+        ProductsStore.addFoundListener(this.updateState);
+        CategoriesStore.addAllLoadedListener(this.updateProps);
 
-        this.setState(this._getState());
+        this.updateState();
     }
 
     componentWillReceiveProps(props) {
-        this._updateProps(props);
+        this.updateProps(props);
     }
 
     componentWillUnmount() {
-        ProductsStore.removeFoundListener(this._onFound);
-        CategoriesStore.removeAllLoadedListener(this._updateProps);
+        ProductsStore.removeFoundListener(this.updateState);
+        CategoriesStore.removeAllLoadedListener(this.updateProps);
     }
 
     render() {
         return (<div className='women-product'>
-                    <div className=' w_content'>
-            <div className='women'>
-                <h4>{!this.state.category ? null : this.state.category.name}</h4>
-                <ul className='w_nav'>
-                    <li>Sort : </li>
-    {this.props.sorts.map(s => {
-        return <li key={s}>{!this.state.filter || this.state.filter.sort === s ? <span>{s}</span> : <Link to={this.props.location.pathname} query={Object.assign({}, this.props.location.query, {'sort': s})}>{s}</Link>}</li>
-    })}
-
-</ul>
-<div className='clearfix'> </div>
-</div>
-</div>
+                    <ProductListHeaderView model={this.state.model}/>
 <div className='grid-product'>
    <div className='product-grid edit-element'>
       <div className='content_box'>
@@ -62,10 +53,10 @@ export default class ProductList extends Component {
 <InfiniteScroll
     next={this.loadMore}
     endMessage={<span/>}
-    hasMore={this.state.hasMore}
+    hasMore={this.state.model.hasMore}
     style={{overflow:'inherit'}}
     loader={<div className='product-grid'><BlockUi tag='div' blocking={true}/><div className='clearfix'></div></div>}>
-    {this.state.products}
+    {this.state.model.products}
   </InfiniteScroll>
     <div className='clearfix'> </div>
   </div>
@@ -73,47 +64,31 @@ export default class ProductList extends Component {
 }
 
 loadMore() {
-    const filter = this.state.filter;
+    const filter = this.state.model.filter;
     filter.skip += filter.take;
     ProductActions.find(filter);
 }
 
-_getState() {
+updateState() {
     const found = ProductsStore.getFound();
-    return Object.assign({}, this.state, {
-        filter: found ? found.filter : ProductsStore.getDefaultFilter(),
-        products: !found ? [] : found.filter.skip === 0 ? found.products.map(this._renderProduct) : this.state.products.concat(found.products.map(this._renderProduct)),
-        hasMore: !found || found.products.length === found.filter.take
-    });
+
+    const state = this.state;
+    state.model.filter = found ? found.filter : ProductsStore.getDefaultFilter();
+    state.model.products = !found ? [] : found.filter.skip === 0 ? found.products.map(p => <ProductListItemView product={p} key={p.id}/>) : this.state.model.products.concat(found.products.map(p => <ProductListItemView product={p} key={p.id}/>));
+    state.model.hasMore = !found || found.products.length === found.filter.take;
+    state.model.location = this.props.location;
+
+    this.setState(state);
 }
 
-               _renderProduct(product) {
-                   return <div className='product-grid' key={product.id}>
-               <ManageIcons basePath={`products/${product.id}`}/>
-               <div className='content_box'>
-                  <Link to={`products/${product.id}`}>
-                     <div className='left-grid-view grid-view-left'>
-                        <img src={UrlBuilder.buildFileUrl(product.imageId)} alt=''/>
-                    </div>
-                  </Link>
-                  <h4>{product.name}</h4>
-                  <p>{product.summary}</p>
-         </div>
-      </div>
-               }
-
-_onFound() {
-    this.setState(this._getState());
-}
-
-_updateProps(props = this.props) {
+updateProps(props = this.props) {
     const state = this.state;
 
     const categoryId = !props.params || !props.params.categoryId ? null : props.params.categoryId;
 
     if (categoryId) {
         const category = CategoriesStore.getCategory(categoryId);
-        state.category = category;
+        state.model.category = category;
         if (!category) {
             return;
                }
@@ -123,24 +98,20 @@ _updateProps(props = this.props) {
         for (let child of category.children) {
             categories.push(child.id);
                }
-        state.filter.categories = categories;
+        state.model.filter.categories = categories;
                } else {
-        state.category = null;
-        state.filter.categories = null;
+        state.model.category = null;
+        state.model.filter.categories = null;
                }
 
     if (props.location.query.sort) {
-        state.filter.sort = props.location.query.sort;
+        state.model.filter.sort = props.location.query.sort;
                }
 
-    state.filter.skip = 0;
+    state.model.filter.skip = 0;
 
-    ProductActions.find(state.filter);
+    ProductActions.find(state.model.filter);
 
     this.setState(state);
                }
-               }
-
-ProductList.defaultProps = {
-                   sorts : ProductsStore.getAvailableSorts()
                }

@@ -900,7 +900,7 @@ p.m_text {
 .product-grid .icon-group {
     float: left;
     position: absolute;
-    z-index: 9999;
+    z-index: 9998;
 }
 
 .product-grid h4 {

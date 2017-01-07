@@ -180,9 +180,7 @@ export default class Product extends Component {
         });
     }
 
-    updateState(startState) {
-        const state = startState ? startState : this.state;
-
+    updateState(state = this.state) {
         const product = !this.props.params.productId ? null : ProductsStore.getGot();
 
         let notAddedCategories = null;

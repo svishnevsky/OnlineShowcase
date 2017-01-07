@@ -10,7 +10,7 @@ export default class CategoryDelete extends Component {
         super();
 
         this.delete = this.delete.bind(this);
-        this._onDeleted = this._onDeleted.bind(this);
+        this.onDeleted = this.onDeleted.bind(this);
     }
 
     close() {
@@ -23,11 +23,11 @@ export default class CategoryDelete extends Component {
             isLoading: false
     }
 
-        CategoriesStore.addDeletedListener(this._onDeleted);
+        CategoriesStore.addDeletedListener(this.onDeleted);
     }
 
     componentWillUnmount() {
-        CategoriesStore.removeDeletedListener(this._onDeleted);
+        CategoriesStore.removeDeletedListener(this.onDeleted);
     }
 
     delete() {
@@ -52,7 +52,7 @@ export default class CategoryDelete extends Component {
                  );
 }
 
-_onDeleted() {
+onDeleted() {
     this.close();
 }
 }

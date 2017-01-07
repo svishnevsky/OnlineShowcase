@@ -15,18 +15,18 @@ export default class CategoryList extends Component {
     constructor() {
         super();
 
-        this._onChange = this._onChange.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.state = getState();
     }
 
     componentWillMount() {
-        UserStore.addChangeListener(this._onChange);
-        CategoriesStore.addAllLoadedListener(this._onChange);
+        UserStore.addChangeListener(this.onChange);
+        CategoriesStore.addAllLoadedListener(this.onChange);
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
-        CategoriesStore.removeAllLoadedListener(this._onChange);
+        UserStore.removeChangeListener(this.onChange);
+        CategoriesStore.removeAllLoadedListener(this.onChange);
     }
 
     render() {
@@ -57,7 +57,7 @@ return (
         )
 }
 
-    _onChange() {
+    onChange() {
         this.setState(getState());
     }
 }

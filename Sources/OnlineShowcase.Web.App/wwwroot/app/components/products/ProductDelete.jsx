@@ -10,7 +10,7 @@ export default class ProductDelete extends Component {
         super();
 
         this.delete = this.delete.bind(this);
-        this._onDeleted = this._onDeleted.bind(this);
+        this.onDeleted = this.onDeleted.bind(this);
     }
 
     close() {
@@ -23,11 +23,11 @@ export default class ProductDelete extends Component {
             isLoading: false
         }
 
-        ProductsStore.addDeletedListener(this._onDeleted);
+        ProductsStore.addDeletedListener(this.onDeleted);
     }
 
     componentWillUnmount() {
-        ProductsStore.removeDeletedListener(this._onDeleted);
+        ProductsStore.removeDeletedListener(this.onDeleted);
     }
 
     delete() {
@@ -52,7 +52,7 @@ export default class ProductDelete extends Component {
                  );
 }
 
-_onDeleted() {
+onDeleted() {
     this.close();
 }
 }
