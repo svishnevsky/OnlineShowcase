@@ -10,7 +10,29 @@ const FOUND_EVENT = 'product_found';
 
 const productsRepository = new ProductsRepository();
 
-const state = {};
+const state = {
+    filter: {
+        skip: 0,
+        take: 20,
+        sort: 'popular'
+    },
+    availableSorts: {
+        'new': 'created:desc',
+        'popular': 'viewcount:desc'
+    }
+};
+
+const isSameArrays = (a, b) => {
+    if (!a && !b) {
+        return true;
+    }
+
+    if ((a && !b) || (!a && b)) {
+        return false;
+    }
+
+    return a.filter(x => b.indexOf(x) === -1).length === 0;
+}
 
 function saveProduct(product) {
     productsRepository.save(product).then(response => {
@@ -19,14 +41,24 @@ function saveProduct(product) {
             data: response.data
         };
 
+        if (state.got) {
+            getProduct(state.got.id);
+        }
+
+        findProducts(state.filter, true);
         ProductsStore.emitSaved();
     });
 }
 
 function deleteProduct(id){
     productsRepository.delete(id).then(() => {
+        findProducts(state.filter, true);
         ProductsStore.emitDeleted();
     });
+
+    if (state.got && state.got.id === id) {
+        state.got = null;
+    }
 }
 
 function getProduct(id){
@@ -37,9 +69,26 @@ function getProduct(id){
     });
 }
 
-function findProducts(filter){
-    productsRepository.find(filter).then(response => {
-        state.found = response.data;
+function findProducts(filter, force) {
+    const sort = !filter.sort ? null : state.availableSorts[filter.sort];
+
+    if (!force && state.found && state.found.filter.skip === filter.skip && state.found.filter.take === filter.take && state.found.filter.sort === sort && isSameArrays(state.found.filter.categories, filter.categories)) {
+        return;
+    }
+    
+    const newfilter = Object.assign({}, filter);
+    newfilter.sort = sort;
+    
+    if (force) {
+        newfilter.skip = 0;
+    }
+
+    productsRepository.find(newfilter).then(response => {
+        newfilter.sort = filter.sort;
+        state.found = {
+            products: response.data,
+            filter: newfilter
+        };
 
         ProductsStore.emitFound();
     });
@@ -104,6 +153,14 @@ class ProductsStoreClass extends EventEmitter {
 
     getFound() {
         return state.found;
+    }
+
+    getDefaultFilter() {
+        return Object.assign({}, state.filter);
+    }
+
+    getAvailableSorts() {
+        return Object.keys(state.availableSorts);
     }
 }
 

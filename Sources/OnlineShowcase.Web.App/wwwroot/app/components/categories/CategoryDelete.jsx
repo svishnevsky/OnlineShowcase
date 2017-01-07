@@ -1,18 +1,16 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
-import '../../utils/ModalStyles'
 import CategoryActions from '../../actions/CategoryActions'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
 import BlockUi from 'react-block-ui'
-import 'react-block-ui/style.css'
 
 export default class CategoryDelete extends Component {
     constructor() {
         super();
 
         this.delete = this.delete.bind(this);
-        this._onDeleted = this._onDeleted.bind(this);
+        this.onDeleted = this.onDeleted.bind(this);
     }
 
     close() {
@@ -25,11 +23,11 @@ export default class CategoryDelete extends Component {
             isLoading: false
     }
 
-        CategoriesStore.addDeletedListener(this._onDeleted);
+        CategoriesStore.addDeletedListener(this.onDeleted);
     }
 
     componentWillUnmount() {
-        CategoriesStore.removeDeletedListener(this._onDeleted);
+        CategoriesStore.removeDeletedListener(this.onDeleted);
     }
 
     delete() {
@@ -42,7 +40,7 @@ export default class CategoryDelete extends Component {
 
     render() {
         return (
-             <Modal isOpen={true}>
+             <Modal isOpen={true} contentLabel={''}>
                  <BlockUi tag='div' blocking={this.state.isLoading}>
                      <h3>Are you sure?</h3>
                      <div className='btn-group'>
@@ -54,7 +52,7 @@ export default class CategoryDelete extends Component {
                  );
 }
 
-_onDeleted() {
+onDeleted() {
     this.close();
 }
 }

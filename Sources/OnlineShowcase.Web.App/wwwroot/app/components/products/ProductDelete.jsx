@@ -1,18 +1,16 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
-import '../../utils/ModalStyles'
 import ProductActions from '../../actions/ProductActions'
 import ProductsStore from '../../stores/ProductsStore'
 import { browserHistory } from 'react-router'
 import BlockUi from 'react-block-ui'
-import 'react-block-ui/style.css'
 
 export default class ProductDelete extends Component {
     constructor() {
         super();
 
         this.delete = this.delete.bind(this);
-        this._onDeleted = this._onDeleted.bind(this);
+        this.onDeleted = this.onDeleted.bind(this);
     }
 
     close() {
@@ -21,15 +19,15 @@ export default class ProductDelete extends Component {
     
     componentWillMount() {
         this.state = {
-            id: this.props.params.id,
+            id: this.props.params.productId,
             isLoading: false
         }
 
-        ProductsStore.addDeletedListener(this._onDeleted);
+        ProductsStore.addDeletedListener(this.onDeleted);
     }
 
     componentWillUnmount() {
-        ProductsStore.removeDeletedListener(this._onDeleted);
+        ProductsStore.removeDeletedListener(this.onDeleted);
     }
 
     delete() {
@@ -42,7 +40,7 @@ export default class ProductDelete extends Component {
 
     render() {
         return (
-             <Modal isOpen={true}>
+             <Modal isOpen={true} contentLabel={''}>
                  <BlockUi tag='div' blocking={this.state.isLoading}>
                      <h3>Are you sure?</h3>
                      <div className='btn-group'>
@@ -54,7 +52,7 @@ export default class ProductDelete extends Component {
                  );
 }
 
-_onDeleted() {
+onDeleted() {
     this.close();
 }
 }

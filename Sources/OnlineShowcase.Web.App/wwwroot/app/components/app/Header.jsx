@@ -13,16 +13,16 @@ export default class Header extends Component {
     constructor() {
         super();
 
-        this._onChange = this._onChange.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.state = getState();
     }
 
     componentWillMount() {
-        UserStore.addChangeListener(this._onChange);
+        UserStore.addChangeListener(this.onChange);
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
+        UserStore.removeChangeListener(this.onChange);
     }
 
     render() {
@@ -35,6 +35,10 @@ export default class Header extends Component {
                         <div className='header-bottom-left'>
                             <div className='logo'>
                                 <Link to='/'><img src='images/logo.png' alt='OnlineShowcase'/></Link>
+                            </div>
+                            <div className='links'>
+                                <Link to='/aboutus'>About Us</Link>
+                                <Link to='/contactus'>Contact Us</Link>
                             </div>
                             <div className='clearfix'> </div>
                         </div>
@@ -56,7 +60,7 @@ export default class Header extends Component {
         )
     }
 
-    _onChange() {
+    onChange() {
         this.setState(getState());
     }
 }

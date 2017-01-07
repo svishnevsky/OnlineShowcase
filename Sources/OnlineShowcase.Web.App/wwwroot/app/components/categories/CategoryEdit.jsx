@@ -1,11 +1,9 @@
 ﻿import React, { Component } from 'react'
 import Modal from 'react-modal'
-import '../../utils/ModalStyles'
 import CategoryActions from '../../actions/CategoryActions'
 import CategoriesStore from '../../stores/CategoriesStore'
 import { browserHistory } from 'react-router'
 import BlockUi from 'react-block-ui'
-import 'react-block-ui/style.css'
 import Validation from 'react-validation';
 
 
@@ -18,9 +16,9 @@ export default class CategoryEdit extends Component {
         super();
 
         this.save = this.save.bind(this);
-        this._getState = this._getState.bind(this);
-        this._onSaved = this._onSaved.bind(this);
-        this._onLoaded = this._onLoaded.bind(this);
+        this.getState = this.getState.bind(this);
+        this.onSaved = this.onSaved.bind(this);
+        this.onLoaded = this.onLoaded.bind(this);
     }
 
     save() {
@@ -32,7 +30,7 @@ export default class CategoryEdit extends Component {
             parentId: this.state.parentId,
             id: this.state.id,
             name: this.form.components.name.state.value
-        });this.props.params.categoryId
+        });
     }
 
     close() {
@@ -40,15 +38,15 @@ export default class CategoryEdit extends Component {
     }
     
     componentWillMount() {
-        this.state = this._getState();
+        this.state = this.getState();
 
-        CategoriesStore.addSavedListener(this._onSaved);
-        CategoriesStore.addAllLoadedListener(this._onLoaded);
+        CategoriesStore.addSavedListener(this.onSaved);
+        CategoriesStore.addAllLoadedListener(this.onLoaded);
     }
 
     componentWillUnmount() {
-        CategoriesStore.removeSavedListener(this._onSaved);
-        CategoriesStore.removeAllLoadedListener(this._onLoaded);
+        CategoriesStore.removeSavedListener(this.onSaved);
+        CategoriesStore.removeAllLoadedListener(this.onLoaded);
     }
 
     handleSubmit(event){
@@ -58,7 +56,7 @@ export default class CategoryEdit extends Component {
 
     render() {
         return (
-            <Modal isOpen={true}><BlockUi tag='div' blocking={this.state.isLoading}>
+            <Modal isOpen={true} contentLabel={''}><BlockUi tag='div' blocking={this.state.isLoading}>
                 <h3>{this.state.id ? 'Update category' : 'Create new category'}</h3>
                 <Validation.components.Form ref={c => { this.form = c }} onSubmit={this.handleSubmit.bind(this)}>
             <label htmlFor='name'>Name*</label>
@@ -73,7 +71,7 @@ export default class CategoryEdit extends Component {
         )
 }
 
-_getState() {
+getState() {
     const isNewChild = this.props.params.categoryId && this.props.route.isNewChild;
     const category = !this.props.params.categoryId || isNewChild ? null : CategoriesStore.getCategory(this.props.params.categoryId);
     return {
@@ -84,7 +82,7 @@ _getState() {
     };   
 }
 
-_onSaved(){
+onSaved(){
     const saved = getSaved();
     const state = this.state;
 
@@ -102,7 +100,7 @@ _onSaved(){
     }
 }
 
-_onLoaded() {
-    this.setState(this._getState());
+onLoaded() {
+    this.setState(this.getState());
 }
 }

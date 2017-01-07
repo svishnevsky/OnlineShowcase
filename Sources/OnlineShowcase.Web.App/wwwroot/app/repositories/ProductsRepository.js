@@ -15,7 +15,7 @@ export default class ProductsRepository {
         return HttpClient.send(new Request('DELETE', path + id, null, true));
     }
     
-    find() {
-        return HttpClient.send(new Request('GET', path + '?'));
+    find(filter) {
+        return HttpClient.send(new Request('GET', path, filter));
     }
 }

@@ -13,17 +13,17 @@ export default class App extends Component {
     constructor(){
         super();
 
-        this._onChange = this._onChange.bind(this);
+        this.onChange = this.onChange.bind(this);
 
         this.state = getState();
     }
 
     componentWillMount() {
-        UserStore.addChangeListener(this._onChange);
+        UserStore.addChangeListener(this.onChange);
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
+        UserStore.removeChangeListener(this.onChange);
     }
 
     render() {
@@ -39,7 +39,7 @@ export default class App extends Component {
         )
                     }
 
-_onChange(){
+onChange(){
     this.setState(getState());
 }
 }

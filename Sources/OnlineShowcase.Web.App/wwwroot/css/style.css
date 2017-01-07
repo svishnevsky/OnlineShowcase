@@ -88,6 +88,20 @@ ul.support {
     width: 55%;
 }
 
+    .header-bottom-left .links {
+        text-align: center;
+    }
+
+        .header-bottom-left .links a {
+            display: inline-block;
+            margin: 1.7em 15px 0;
+            text-transform: uppercase;
+        }
+
+            .header-bottom-left .links a:hover {
+                text-decoration: none;
+            }
+
 .logo {
     float: left;
     width: 27%;
@@ -279,6 +293,7 @@ ul {
     vertical-align: middle;
     transition: all .2s ease-in-out;
     transform: scale(0.6);
+    cursor: pointer;
 }
 
     .icon:hover {
@@ -343,7 +358,7 @@ ul.cute li {
 
 .sub-cate {
     width: 320px;
-    margin: 2em 2em 0 0;
+    margin: 0 2em 0 0;
     position: fixed;
 }
 
@@ -689,6 +704,10 @@ span.dolor-left-grid {
     margin: 3em 0;
 }
 
+    .single_top .grid-product {
+        padding-top: 0;
+    }
+
 .toogle {
     margin-top: 4%;
 }
@@ -801,13 +820,26 @@ p.m_text {
     padding-left: 340px;
 }
 
+    .main p {
+        text-align: justify;
+        text-indent: 20px;
+    }
+
+    .women-product .w_content {
+        position: fixed;
+        width: 800px;
+        height: 50px;
+        background-color: #ffffff;
+        z-index: 9999;
+        border-bottom: 1px solid #ebebeb;
+    }
+
 .women_main {
     padding: 2em 0;
 }
 
 .women {
     text-align: left;
-    border-bottom: 1px solid #ebebeb;
 }
 
     .women h4 {
@@ -815,10 +847,6 @@ p.m_text {
         font-size: 1em;
         text-transform: uppercase;
         color: #333333;
-    }
-
-    .women h4 {
-        color: #555555;
     }
 
 .w_nav {
@@ -832,9 +860,16 @@ p.m_text {
 
     .w_nav li {
         display: inline-block;
+        margin-left: 3px;
+        padding-right: 3px;
+        border-right: 1px solid;
     }
 
-        .w_nav li a {
+        .w_nav li:first-child, .w_nav li:last-child {
+            border: none;
+        }
+
+        .w_nav li a, .w_nav li span {
             display: block;
             color: #555555;
             text-transform: capitalize;
@@ -844,13 +879,28 @@ p.m_text {
                 color: #00405d;
             }
 
+        .w_nav li span {
+            font-weight: bold;
+            font-size: 1.01em;
+        }
+
 .grid-product {
     display: block;
     margin: 2% 0;
+    padding-top: 50px;
 }
+
+    .grid-product .av-block-ui {
+        display: block;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+    }
 
 .product-grid .icon-group {
     float: left;
+    position: absolute;
+    z-index: 9998;
 }
 
 .product-grid h4 {
@@ -870,6 +920,53 @@ p.m_text {
     margin-bottom: 10px;
 }
 
+.product-grid.upload-files {
+    border: 3px dashed;
+    padding: 0;
+}
+
+    .product-grid.upload-files .dropzone {
+        width: 100%;
+        padding: 10px;
+        min-height: 275px;
+    }
+
+    .product-grid.upload-files.av-block-ui {
+        width: 33.333%;
+        min-height: 326px;
+    }
+
+.product-grid.product-image {
+    position: relative;
+}
+
+    .product-grid.product-image span {
+        position: absolute;
+    }
+
+        .product-grid.product-image span.set-primary {
+            width: 90%;
+            text-align: center;
+            bottom: 10px;
+            background-color: #ffffff;
+            cursor: pointer;
+            margin: 0 5%;
+            border-radius: 3px;
+        }
+
+            .product-grid.product-image span.set-primary:hover {
+                transform: scale(1.02);
+            }
+
+.images_3_of_2 .icon {
+    position: absolute;
+}
+
+.grid.images_3_of_2 {
+    height: 326px;
+    overflow: hidden;
+}
+
 .content_box h4 {
     text-align: center;
 }
@@ -881,7 +978,18 @@ p.m_text {
 .product-grid {
     float: left;
     width: 33.333%;
+    min-height: 326px;
+    display: block;
+    overflow: hidden;
 }
+
+    .product-grid img {
+        height: 326px;
+    }
+
+    .product-grid.grid-view-left {
+        padding: 2px;
+    }
 
 .left-grid-view {
     overflow: hidden;
@@ -896,13 +1004,22 @@ p.m_text {
         left: 163px;
     }
 
-.grid-view-left img {
-    -webkit-transition: all 0.3s ease-in-out;
-    -moz-transition: all 0.3s ease-in-out;
-    -o-transition: all 0.3s ease-in-out;
-    -ms-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
-    margin: 0 auto;
+.grid-view-left {
+    padding: 0;
+}
+
+    .grid-view-left img, .images_3_of_2 img {
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        margin: 0 auto;
+        min-width: 100%;
+    }
+
+.images_3_of_2.grid img {
+    height: 100%;
 }
 
 .grid-view-left .mask {
@@ -942,7 +1059,7 @@ p.m_text {
     font-size: 2em;
     color: #555;
     text-transform: uppercase;
-    margin: 1em 0;
+    margin: 1em 0 0;
 }
 
 .map {
@@ -992,7 +1109,7 @@ p.m_text {
     resize: none;
 }
 
-.contact-form input[type="submit"] {
+.contact-form button {
     padding: 10px 25px;
     color: #fff;
     background: #F97E76;
@@ -1009,9 +1126,13 @@ p.m_text {
     float: right;
 }
 
-    .contact-form input[type="submit"]:hover {
+    .contact-form button:hover {
         background: #1DBAA5;
     }
+
+.contact-form form div {
+    padding: 0;
+}
 /*--login--*/
 .login-left {
     padding: 0;
@@ -1820,7 +1941,7 @@ select.in-drop {
         padding: 0 0 0 24.5em;
     }
 
-    .product-grid {
+    .product-grid, .grid-product .av-block-ui {
         width: 50%;
     }
 
