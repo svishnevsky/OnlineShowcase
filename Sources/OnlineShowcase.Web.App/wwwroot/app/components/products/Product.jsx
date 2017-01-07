@@ -150,6 +150,8 @@ export default class Product extends Component {
         CategoriesStore.removeAllLoadedListener(this.updateState);
         FilesStore.removeLoadedListener(this.updateState);
         FilesStore.removeUploadedListener(this.onFilesUploaded);
+
+        this.setState(getDefaultState());
     }
 
     render() {
@@ -159,16 +161,20 @@ export default class Product extends Component {
     save(shop) {
         const state = this.state;
         state.model.isLoading = true;
-        this.setState(state);
-
+        if (shop) {
+            state.model.name = shop.name;
+            state.model.description = shop.description;
+            this.setState(state);
+        }
+        
         for (let img of state.removingImages) {
             FileActions.delete(img);
         }
 
         ProductActions.save({
             id: this.state.model.id,
-            name: shop.name,
-            description: shop.description,
+            name: state.model.name,
+            description: state.model.description,
             categories: this.state.model.categories,
             imageId: typeof this.state.model.image === 'number' ? this.state.model.image : null
         });
@@ -227,13 +233,11 @@ export default class Product extends Component {
         }
 
         if (saved.status >= 200 && saved.status < 300) {
-            console.log(saved);
-            console.log(state);
             if (!state.model.id) {
                 state.model.id = saved.data.id;
             }
 
-            state.filePath = this.props.location.pathname;
+            state.filesPath = this.props.location.pathname;
             if (state.filesPath.endsWith('new')) {
                 state.filesPath = state.filesPath.replace('new', state.model.id);
             }
@@ -261,14 +265,12 @@ export default class Product extends Component {
             state.model.image = FilesStore.getUploaded()[0];
             state.isPrimaryImageUploading = false;
             this.save();
-
-            this.uploadNewImages();
-            return;
+        } else {
+            state.isLoading = false;
+            this.close();
         }
 
-        state.isLoading = false;
         this.setState(state);
-        this.close();
     }
 
     uploadNewImages() {   

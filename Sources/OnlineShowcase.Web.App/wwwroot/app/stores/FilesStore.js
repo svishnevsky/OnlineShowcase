@@ -9,14 +9,14 @@ const UPLOADED_EVENT = 'files_uploaded';
 
 const filesRepository = new FilesRepository();
 
-const state = {};
+const state = {
+    files: []
+};
 
 function uploadFiles(path, files){
     return filesRepository.upload(path, files).then(response => {
         state.uploaded = response.data;
-        state.files = state.files.concat(response.data).filter((value, index, self) => {
-            return self.indexOf(value) === index;
-        });
+        state.files = state.files.concat(response.data.filter((value, index, self) => self.indexOf(value) === index));
         
         FilesStore.emitUploaded();
     });

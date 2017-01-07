@@ -41,6 +41,10 @@ function saveProduct(product) {
             data: response.data
         };
 
+        if (state.got) {
+            getProduct(state.got.id);
+        }
+
         findProducts(state.filter, true);
         ProductsStore.emitSaved();
     });
@@ -51,6 +55,10 @@ function deleteProduct(id){
         findProducts(state.filter, true);
         ProductsStore.emitDeleted();
     });
+
+    if (state.got && state.got.id === id) {
+        state.got = null;
+    }
 }
 
 function getProduct(id){
