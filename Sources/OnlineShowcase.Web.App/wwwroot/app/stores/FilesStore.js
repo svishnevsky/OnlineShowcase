@@ -13,6 +13,7 @@ const state = {};
 
 function uploadFiles(path, files){
     return filesRepository.upload(path, files).then(response => {
+        state.uploaded = response.data;
         state.files = state.files.concat(response.data).filter((value, index, self) => {
             return self.indexOf(value) === index;
         });
@@ -74,6 +75,10 @@ class FilesStoreClass extends EventEmitter {
 
     getFiles() {
         return state.files ? state.files : [];
+    }
+
+    getUploaded() {
+        return state.uploaded;
     }
 }
 

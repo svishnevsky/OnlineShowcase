@@ -11,7 +11,7 @@ import CategoryEdit from './components/categories/CategoryEdit.jsx'
 import CategoryDelete from './components/categories/CategoryDelete.jsx'
 import ProductList from './components/products/ProductList.jsx'
 import ProductDelete from './components/products/ProductDelete.jsx'
-import ProductView from './components/products/ProductView.jsx'
+import Product from './components/products/Product.jsx'
 import AuthService from './utils/AuthService';
 import UserStore from './stores/UserStore';
 import './stores/NotificationsStore';
@@ -46,10 +46,10 @@ render((
                 </Route>
             </Route>
             <Route path='products'>
-                <Route path='new' component={ProductView} onEnter={requireContentManager} />
+                <Route path='new' component={Product} onEnter={requireContentManager} />
                 <Route path=':productId'>
-                    <IndexRoute component={ProductView} />
-                    <Route path='edit' component={ProductView} onEnter={requireContentManager} />
+                    <IndexRoute component={Product} />
+                    <Route path='edit' component={Product} onEnter={requireContentManager} />
                     <Route path='delete' component={ProductDelete} onEnter={requireContentManager} />
                 </Route>
             </Route>
