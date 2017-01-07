@@ -1,0 +1,50 @@
+{
+  "name": "OnlineShowcase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Sergey Vishnevsky",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.9.1",
+    "babel-eslint": "^6.0.5",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "css-loader": "^0.26.0",
+    "eslint": "^2.13.1",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-react": "^5.2.2",
+    "npm-install-webpack-plugin": "^4.0.3",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-middleware": "^1.6.1"
+  },
+  "dependencies": {
+    "auth0-lock": "^10.4.0",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-runtime": "^6.9.2",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "flux": "^3.0.0",
+    "jwt-decode": "^2.1.0",
+    "keymirror": "^0.1.1",
+    "promise": "^7.1.1",
+    "react": "^15.4.1",
+    "react-addons-transition-group": "^15.4.1",
+    "react-block-ui": "0.2.0",
+    "react-bootstrap": "^0.29.5",
+    "react-dom": "^15.4.1",
+    "react-dropzone": "^3.7.3",
+    "react-infinite-scroll-component": "^2.0.1",
+    "react-modal": "^1.5.2",
+    "react-router": "^2.4.1",
+    "react-validation": "^2.10.9"
+  }
+}
