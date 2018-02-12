@@ -8,8 +8,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using FluentValidation.AspNetCore;
 using OnlineShowcase.Web.Api.Validation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
-namespace OnlineShowcase.Web.Api
+namespace OnlineShowcase.Web.Api.App
 {
     public class Startup
     {
@@ -39,40 +41,46 @@ namespace OnlineShowcase.Web.Api
                         .AllowCredentials());
             });
 
-            services.AddMvc(setup => {
+            services.AddMvc(setup =>
+            {
                 setup.Filters.Add(typeof(ModelValidationAttribute));
             }).AddFluentValidation(config =>
             {
                 config.RegisterValidatorsFromAssembly(Assembly.GetEntryAssembly());
             });
 
+            var keyAsBase64 = Configuration["auth0:clientSecret"].Replace('_', '/').Replace('-', '+');
+            var keyAsBytes = Convert.FromBase64String(keyAsBase64);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = $"https://{Configuration["auth0:Domain"]}/",
+                        ValidAudience = Configuration["auth0:ClientId"],
+                        IssuerSigningKey = new SymmetricSecurityKey(keyAsBytes),
+                        RoleClaimType = "groups"
+                    };
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .Build();
+            });
+
             return DIConfig.Build(services, Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            var keyAsBase64 = Configuration["auth0:clientSecret"].Replace('_', '/').Replace('-', '+');
-            var keyAsBytes = Convert.FromBase64String(keyAsBase64);
-
-            var options = new JwtBearerOptions
-            {
-                TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = $"https://{Configuration["auth0:Domain"]}/",
-                    ValidAudience = Configuration["auth0:ClientId"],
-                    IssuerSigningKey = new SymmetricSecurityKey(keyAsBytes),
-                    RoleClaimType = "groups"
-                }
-            };
-
-            app.UseJwtBearerAuthentication(options);
-
             app.UseCors("AllowAnyOrigin");
-            
+
             app.UseMvc(RoutingConfig.Register);
         }
     }
