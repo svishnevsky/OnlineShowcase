@@ -16,7 +16,7 @@ using OnlineShowcase.Core.Reactive.Subscribers;
 using OnlineShowcase.Core.Reactive;
 using OnlineShowcase.Core.Services.Notifications;
 
-namespace OnlineShowcase.Web.Api
+namespace OnlineShowcase.Web.Api.App
 {
     public static class DIConfig
     {

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>OnlineShowcase.Data.EF</AssemblyName>
+    <PackageId>OnlineShowcase.Data.EF</PackageId>
+    <NetStandardImplicitPackageVersion>2.0.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineShowcase.Data\OnlineShowcase.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.2.0" />
+    <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="1.1.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.2" />
+  </ItemGroup>
+
+</Project>

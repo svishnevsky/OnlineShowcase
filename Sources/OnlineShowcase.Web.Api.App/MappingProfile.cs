@@ -3,11 +3,10 @@ using System.IO;
 using System.Linq;
 
 using AutoMapper;
-using OnlineShowcase.Data.EF.Filtering;
 using OnlineShowcase.Data.Filtering;
 using OnlineShowcase.Web.Api.Model;
 
-namespace OnlineShowcase.Web.Api
+namespace OnlineShowcase.Web.Api.App
 {
     public class MappingProfile : Profile
     {

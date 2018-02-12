@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="7.4.0" />
+    <PackageReference Include="Humanizer.Core" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineShowcase.Core.Reactive\OnlineShowcase.Core.Reactive.csproj" />
+    <ProjectReference Include="..\OnlineShowcase.Core\OnlineShowcase.Core.csproj" />
+  </ItemGroup>
+
+</Project>

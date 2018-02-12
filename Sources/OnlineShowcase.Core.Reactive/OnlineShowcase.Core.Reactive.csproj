@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>OnlineShowcase.Core.Reactive</AssemblyName>
+    <PackageId>OnlineShowcase.Core.Reactive</PackageId>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineShowcase.Core\OnlineShowcase.Core.csproj" />
+  </ItemGroup>
+
+</Project>
